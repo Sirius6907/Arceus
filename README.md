@@ -1,262 +1,58 @@
-# Arceus
+# Arceus: High-Performance Graph-Relational Codebase Indexer & AI Context Engine
 
-**Building the nervous system for AI agent context.**
+Arceus is a local-first static analysis engine and code graph database. It is designed to solve the "context window fatigue" of downstream AI agents (such as Claude Code, Cursor, and Windsurf) by representing a codebase as a queryable graph. 
 
-Indexes any codebase into a highly structured knowledge graph—tracking every class, function, call chain, cluster, and cross-file execution flow—then exposes it through smart tools so AI agents never operate blind.
+By analyzing compiler-grade dependencies, lexical scopes, and execution flows, Arceus exposes precise structural queries to AI agents via the Model Context Protocol (MCP), compressing context size and reducing token wastage by up to 750x.
 
 ```mermaid
-flowchart LR
-    CodeBase["Raw Codebase Files"] -->|"Tree-Sitter AST Parsing"| Indexer["Arceus Indexer"]
-    Indexer -->|"Symbol Resolution & Heuristics"| LadybugDB[("LadybugDB Graph & Vector DB")]
-    LadybugDB -->|"Smart Context & Cypher"| MCPServer["MCP Server & CLI"]
-    MCPServer -->|"High-Confidence Architectural View"| AIAgent["AI Agents (Cursor, Claude Code, etc.)"]
-```
-
-> *Arceus provides a deep relational view of your codebase.* Traditional tools help you locate code snippets. Arceus lets you analyze the entire system—because its knowledge graph maps actual compiler-resolved dependencies and execution flows, not just lexical occurrences.
-
-> The **Web UI** offers a visual graph explorer and a browser-based AI chat. The **CLI + MCP** is designed to make your AI agents reliable. It gives Cursor, Claude Code, Windsurf, and other editors a deep architectural view of your codebase so they stop missing dependencies, breaking call chains, and making blind modifications.
-
----
-
-**Live-link:** [arceus-arc.vercel.app](https://arceus-arc.vercel.app)
-
----
-
-## Two Ways to Use Arceus
-
-|                   | **CLI + MCP**                                            | **Web UI**                                             |
-| ----------------- | -------------------------------------------------------------- | ------------------------------------------------------------ |
-| **What**          | Index repos locally, connect AI agents via MCP                 | Visual graph explorer + AI chat in browser                   |
-| **For**           | Daily development with Cursor, Claude Code, Windsurf, OpenCode  | Quick exploration, demos, one-off analysis                   |
-| **Scale**         | Full repos, any size                                           | Limited by browser memory (~5k files), or unlimited via backend mode |
-| **Install**       | `npm install -g arceus-s`                                    | No install — browser-only or connect to local `arc serve`    |
-| **Storage**       | LadybugDB native (fast, persistent)                            | LadybugDB WASM (in-memory, per session)                      |
-| **Parsing**       | Tree-sitter native bindings                                    | Tree-sitter WASM                                             |
-| **Privacy**       | Everything local, no network                                   | Everything in-browser, no server                             |
-
-> **Bridge mode:** `arc serve` connects the two — the web UI auto-detects the local server and can browse all your CLI-indexed repos without re-uploading or re-indexing.
-
----
-
-## Enterprise
-
-Arceus is available as an **enterprise offering** - either as a fully managed **SaaS** or a **self-hosted** deployment. Also available for **commercial use** of the OSS version with proper licensing.
-
-Enterprise includes:
-- **PR Review** - automated blast radius analysis on pull requests
-- **Auto-updating Code Wiki** - always up-to-date documentation (Code Wiki is also available in OSS)
-- **Auto-reindexing** - knowledge graph stays fresh automatically
-- **Multi-repo support** - unified graph across repositories
-- **OCaml support** - additional language coverage
-- **Priority feature/language support** - request new languages or features
-
-**Upcoming:**
-- Auto regression forensics
-- End-to-end test generation
----
-
-## Development
-
-- [ARCHITECTURE.md](ARCHITECTURE.md) — packages, index → graph → MCP flow, where to change code
-- [RUNBOOK.md](RUNBOOK.md) — analyze, embeddings, stale index, MCP recovery, CI snippets
-- [GUARDRAILS.md](GUARDRAILS.md) — safety rules and operational "Signs" for contributors and agents
-- [CONTRIBUTING.md](CONTRIBUTING.md) — license, setup, commits, and pull requests
-- [TESTING.md](TESTING.md) — test commands for `arc` and `arceus-web`
-
----
-
-## CLI + MCP (Recommended)
-
-The CLI indexes your repository and runs an MCP server that gives AI agents deep codebase awareness.
-
-### Naming & Global Command Installer
-Because the command name `arc` is extremely common and already registered by an unrelated package on the public npm registry, **Arceus CLI is published under the package name `arceus-s`**. 
-
-When installed globally, npm maps the CLI binary to the command **`arc`**, letting you use the tool natively:
-```bash
-# Install globally from npm
-npm install -g arceus-s
-
-# Run commands globally
-arc analyze
-arc setup
-```
-
-### Quick Start
-
-```bash
-# Index your repo (run from repo root)
-npx arceus-s analyze
-```
-
-This indexes the codebase, installs agent skills, registers Claude Code hooks, and creates `AGENTS.md` / `CLAUDE.md` context files — all in one command.
-
-To configure MCP for your editors, run `arc setup` once (or use `npx arceus-s setup` if not installed globally).
-
-> **Faster install (no C++ toolchain needed):** set `ARC_SKIP_OPTIONAL_GRAMMARS=1` before installing globally or running with npx to skip the native `tree-sitter-dart` and `tree-sitter-proto` builds. Dart/Proto files won't be parsed, but install completes in seconds without local compilation toolchains.
-
----
-
-### MCP Setup
-
-`arc setup` auto-detects your editors and writes the correct global MCP config. You only need to run it once.
-
-### Editor Support
-
-| Editor          | MCP | Skills | Hooks (auto-augment) | Support        |
-| --------------- | --- | ------ | -------------------- | -------------- |
-| **Claude Code** | Yes | Yes    | Yes (PreToolUse + PostToolUse) | **Full** |
-| **Cursor**      | Yes | Yes    | Yes (postToolUse, [manual install](arceus-cursor-integration/README.md#hook-install)) | **Full** |
-| **Codex**       | Yes | Yes    | —                   | MCP + Skills   |
-| **Windsurf**    | Yes | —      | —                   | MCP            |
-| **OpenCode**    | Yes | Yes    | —                   | MCP + Skills   |
-
-> **Claude Code** gets the deepest integration: MCP tools + agent skills + PreToolUse hooks that enrich searches with graph context + PostToolUse hooks that detect a stale index after commits and prompt the agent to reindex.
-
----
-
-### Manual Editor Setup (MCP)
-
-> **Recommended for fastest startup:** install `arceus-s` globally (`npm i -g arceus-s`) and run `arc setup` — this writes an absolute-path MCP config that bypasses `npx` entirely. The pinned-`npx` snippets below are a quickstart fallback; on a cold cache the `npx` install can exceed editor timeout limits.
-
-**Claude Code** (full support — MCP + skills + hooks):
-
-```bash
-# macOS / Linux
-claude mcp add arceus -- npx -y arceus-s@latest mcp
-
-# Windows
-claude mcp add arceus -- cmd /c npx -y arceus-s@latest mcp
-```
-
-**Codex** (full support — MCP + skills):
-
-```bash
-codex mcp add arceus -- npx -y arceus-s@latest mcp
-```
-
-**Cursor** (`~/.cursor/mcp.json` — global, works for all projects):
-
-```json
-{
-  "mcpServers": {
-    "arceus": {
-      "command": "npx",
-      "args": ["-y", "arceus-s@latest", "mcp"]
-    }
-  }
-}
-```
-
-**OpenCode** (`~/.config/opencode/config.json`):
-
-```json
-{
-  "mcp": {
-    "arceus": {
-      "type": "local",
-      "command": ["arc", "mcp"]
-    }
-  }
-}
-```
-
-**Codex** (`~/.codex/config.toml` for system scope, or `.codex/config.toml` for project scope):
-
-```toml
-[mcp_servers.arceus]
-command = "npx"
-args = ["-y", "arceus-s@latest", "mcp"]
+flowchart TD
+    Source["Raw Source Tree"] -->|"Static Analysis & Ingestion"| Engine["Arceus Indexer"]
+    Engine -->|"Symbol Resolution & Cross-References"| GraphDB[("LadybugDB Graph & Vector DB")]
+    GraphDB -->|"Relational Queries & Graph RAG"| MCP["MCP Server & CLI"]
+    MCP -->|"High-Fidelity Context"| Agents["AI Agents (Claude Code, Cursor, etc.)"]
 ```
 
 ---
 
-### CLI Commands
-
-```bash
-arc setup                     # Configure MCP for your editors (one-time)
-arc analyze [path]            # Index a repository (or update stale index)
-arc analyze --force           # Force full re-index
-arc analyze --skills          # Generate repo-specific skill files from detected communities
-arc analyze --skip-embeddings # Skip embedding generation (faster)
-arc analyze --skip-agents-md  # Preserve custom AGENTS.md/CLAUDE.md arc section edits
-arc analyze --skip-git        # Index folders that are not Git repositories
-arc analyze --embeddings      # Enable embedding generation (slower, better search)
-arc analyze --verbose         # Log skipped files when parsers are unavailable
-arc analyze --worker-timeout 60  # Increase worker idle timeout for slow parses
-arc mcp                       # Start MCP server (stdio) — serves all indexed repos
-arc serve                     # Start local HTTP server (multi-repo) for web UI connection
-arc list                      # List all indexed repositories
-arc status                    # Show index status for current repo
-arc clean                     # Delete index for current repo
-arc clean --all --force       # Delete all indexes
-arc wiki [path]               # Generate repository wiki from knowledge graph
-arc wiki --model <model>      # Wiki with custom LLM model (default: gpt-4o-mini)
-arc wiki --base-url <url>     # Wiki with custom LLM API base URL
-arc publish                   # Notify the understand-quickly registry (opt-in)
-
-# Repository groups (multi-repo / monorepo service tracking)
-arc group create <name>                                   # Create a repository group
-arc group add <group> <groupPath> <registryName>          # Add a repo to a group.
-arc group remove <group> <groupPath>                      # Remove a repo from a group by path
-arc group list [name]                                     # List groups, or show one group's config
-arc group sync <name>                                     # Extract contracts and match across services
-arc group contracts <name>                                # Inspect extracted contracts and cross-links
-arc group query <name> <q>                                # Search execution flows across all repos in a group
-arc group status <name>                                   # Check staleness of repos in a group
-```
+**Live Web Application:** [arceus-arc.vercel.app](https://arceus-arc.vercel.app)
 
 ---
 
-### What Your AI Agent Gets
+## Operating Models
 
-**16 tools** exposed via MCP (11 per-repo + 5 group):
+Arceus operates in two primary modes to support different development workflows:
 
-| Tool               | What It Does                                                      | `repo` Param |
-| ------------------ | ----------------------------------------------------------------- | ------------ |
-| `list_repos`       | Discover all indexed repositories                                 | —            |
-| `query`            | Process-grouped hybrid search (BM25 + semantic + RRF)             | Optional     |
-| `context`          | 360-degree symbol view — references, hierarchy, and flows         | Optional     |
-| `impact`           | Blast radius analysis with depth grouping and confidence          | Optional     |
-| `detect_changes`   | Git-diff impact — maps changed lines to affected processes        | Optional     |
-| `rename`           | Multi-file coordinated rename with graph + text search            | Optional     |
-| `cypher`           | Raw Cypher graph queries                                          | Optional     |
-| `group_list`       | List configured repository groups                                 | —            |
-| `group_sync`       | Extract contracts and match across repos/services                 | —            |
-| `group_contracts`  | Inspect extracted contracts and cross-links                       | —            |
-| `group_query`      | Search execution flows across all repos in a group                | —            |
-| `group_status`     | Check staleness of repos in a group                               | —            |
+| Attribute | **CLI & Model Context Protocol (MCP)** | **Web Interface (Local-First Dashboard)** |
+| :--- | :--- | :--- |
+| **Primary Use Case** | Daily IDE development and agent-guided refactoring. | Codebase visualization, visual query execution, and browser chat. |
+| **Compatibility** | Cursor, Claude Code, Windsurf, OpenCode, Codex. | Any browser (Chrome, Edge, Firefox, Safari). |
+| **Capacity** | Large monorepos (unlimited scale). | Up to ~5,000 files in-browser (unlimited via local API bridge). |
+| **Storage Engine** | Native embedded LadybugDB (persistent, disk-backed). | In-Memory LadybugDB WASM (session-scoped). |
+| **Parser Type** | Native Tree-sitter bindings (C++ compilation). | WebAssembly-compiled Tree-sitter. |
+| **Telemetry & Privacy**| 100% offline, local-only processing. | In-browser processing; no code leaves your machine. |
 
-> When only one repo is indexed, the `repo` parameter is optional. With multiple repos, specify which one: `query({query: "auth", repo: "my-app"})`.
-
-**Resources** for instant context:
-
-| Resource                                  | Purpose                                              |
-| ----------------------------------------- | ---------------------------------------------------- |
-| `arc://repos`                             | List all indexed repositories (read this first)      |
-| `arc://repo/{name}/context`               | Codebase stats, staleness check, and available tools |
-| `arc://repo/{name}/clusters`              | All functional clusters with cohesion scores         |
-| `arc://repo/{name}/cluster/{name}`        | Cluster members and details                          |
-| `arc://repo/{name}/processes`             | All execution flows                                  |
-| `arc://repo/{name}/process/{name}`        | Full process trace with steps                        |
-| `arc://repo/{name}/schema`                | Graph schema for Cypher queries                      |
-
-**2 MCP prompts** for guided workflows:
-
-| Prompt             | What It Does                                                              |
-| ------------------ | ------------------------------------------------------------------------- |
-| `detect_impact`    | Pre-commit change analysis — scope, affected processes, risk level        |
-| `generate_map`     | Architecture documentation from the knowledge graph with mermaid diagrams |
-
-**4 agent skills** installed to `.claude/skills/` automatically:
-- **Exploring** — Navigate unfamiliar code using the knowledge graph
-- **Debugging** — Trace bugs through call chains
-- **Impact Analysis** — Analyze blast radius before changes
-- **Refactoring** — Plan safe refactors using dependency mapping
+> [!TIP]
+> **API Bridge Mode**: Run `arc serve` locally, and the browser-based Web UI will auto-detect your local backend to query all your CLI-indexed repositories without needing to re-parse or re-upload files.
 
 ---
 
-## Context Efficiency & Token Optimization (Benchmark)
+## Architectural Advantages & Feature Set
+
+### 1. AST Ingestion & Dependency Tracking
+Arceus parses source files into ASTs (Abstract Syntax Trees) using native language grammars. It resolves references, namespace imports, and type definitions across directories to build a unified codebase map.
+
+### 2. Community Detection & Cohesion Analysis
+Utilizing the Leiden community detection algorithm, Arceus groups code structures into cohesive semantic clusters. This allows AI agents to understand modular boundaries and module interactions without reading boilerplate files.
+
+### 3. Change Impact Forensics (Blast Radius)
+By mapping method-level call chains, Arceus calculates the potential side effects of modifying a given function or file. AI agents can query the "blast radius" to prevent regression bugs before saving modifications.
+
+### 4. Cross-Service Dependency Resolution (Monorepos)
+For service-oriented repositories, Arceus extracts API contracts and matches network endpoints/calls across boundaries, tracking data flows between distinct microservices.
+
+---
+
+## Performance Benchmarks: Context Optimization
 
 Arceus's semantic graph model drastically reduces token wastage and context pollution for downstream LLMs compared to traditional lexical exploration (e.g., recursive grep and file reading).
 
@@ -276,101 +72,173 @@ Arceus's semantic graph model drastically reduces token wastage and context poll
 
 ---
 
-## Multi-Repo MCP Architecture
+## Installation & Environment Setup
 
-Arceus uses a **global registry** so one MCP server can serve multiple indexed repos. No per-project MCP config needed — set it up once and it works everywhere.
-
-```mermaid
-flowchart TD
-    subgraph CLI [CLI Commands]
-        Setup["arc setup"]
-        Analyze["arc analyze"]
-        Clean["arc clean"]
-        List["arc list"]
-    end
-
-    subgraph Registry ["~/.arc/"]
-        RegFile["registry.json"]
-    end
-
-    subgraph Repos [Project Repos]
-        RepoA[".arc/ in repo A"]
-        RepoB[".arc/ in repo B"]
-    end
-
-    subgraph MCP [MCP Server]
-        Server["server.ts"]
-        Backend["LocalBackend"]
-        Pool["Connection Pool"]
-        ConnA["LadybugDB conn A"]
-        ConnB["LadybugDB conn B"]
-    end
-
-    Setup -->|"writes global MCP config"| CursorConfig["~/.cursor/mcp.json"]
-    Analyze -->|"registers repo"| RegFile
-    Analyze -->|"stores index"| RepoA
-    Clean -->|"unregisters repo"| RegFile
-    List -->|"reads"| RegFile
-    Server -->|"reads registry"| RegFile
-    Server --> Backend
-    Backend --> Pool
-    Pool -->|"lazy open"| ConnA
-    Pool -->|"lazy open"| ConnB
-    ConnA -->|"queries"| RepoA
-    ConnB -->|"queries"| RepoB
-```
-
-**How it works:** Each `arc analyze` stores the index in `.arc/` inside the repo (portable, gitignored) and registers a pointer in `~/.arc/registry.json`. When an AI agent starts, the MCP server reads the registry and can serve any indexed repo. LadybugDB connections are opened lazily on first query and evicted after 5 minutes of inactivity (max 5 concurrent).
-
----
-
-## Web UI (Browser-based)
-
-A client-side graph explorer and AI chat — your code never leaves your machine.
-
-**Try it now:** [arceus-arc.vercel.app](https://arceus-arc.vercel.app) — run `arc serve` (or `npx arceus-s serve`) locally and the page auto-connects to your local backend.
-
-Or run the frontend locally:
+### 1. Installation from NPM
+Because the CLI command prefix `arc` conflicts with an existing package on the public registry, Arceus is distributed under the name **`arceus-s`**. Npm automatically binds the CLI binaries to both `arc` and `arceus` in your global scope.
 
 ```bash
-git clone https://github.com/Sirius6907/Arceus.git
-cd Arceus/arceus-shared && npm install && npm run build
-cd ../arceus-web && npm install
-npm run dev
-# Then in another terminal, start the backend the frontend connects to:
-npx arceus-s@latest serve
+# Global installation
+npm install -g arceus-s
+
+# Verify installation
+arc --help
+```
+
+> [!TIP]
+> **Skip Optional Compilations**: If your machine lacks C++ build tools, run `set ARC_SKIP_OPTIONAL_GRAMMARS=1` (Windows) or `export ARC_SKIP_OPTIONAL_GRAMMARS=1` (macOS/Linux) before installing to skip native builds ofoptional grammars (e.g., Dart, Proto).
+
+### 2. Ingesting a Codebase
+Run the indexer from your project's root folder:
+```bash
+npx arceus-s analyze
+```
+This builds your local codebase graph, persists the DB at `.arc/`, registers the path globally, and creates context templates (`AGENTS.md` and `CLAUDE.md`).
+
+### 3. Editor Auto-Configuration (MCP Setup)
+To write the global configuration settings for your active IDEs, run the setup wizard:
+```bash
+arc setup
 ```
 
 ---
 
-## Docker
+## Manual Editor Configuration
 
-The official Docker setup ships **two signed images** orchestrated by `docker-compose.yaml`. Each image is published to both **GitHub Container Registry** (GHCR) and **Docker Hub**:
+For editors that do not support auto-configuration, register the MCP server manually:
 
-| Purpose                                                           | GHCR (default in `docker-compose.yaml`)       | Docker Hub mirror                      |
-| ----------------------------------------------------------------- | --------------------------------------------- | -------------------------------------- |
-| CLI / `arc serve` backend (HTTP API on port `4747`, MCP, indexer) | `ghcr.io/Sirius6907/arc:latest`               | `akonlabs/arc:latest`                  |
-| Static web UI (port `4173`)                                       | `ghcr.io/Sirius6907/arceus-web:latest`        | `akonlabs/arceus-web:latest`           |
-
-### One-command setup
-
+### Claude Code
 ```bash
-docker compose up -d
+# Windows Command Prompt
+claude mcp add arceus -- cmd /c npx -y arceus-s@latest mcp
+
+# macOS & Linux Terminal
+claude mcp add arceus -- npx -y arceus-s@latest mcp
 ```
 
-This starts the server on `http://localhost:4747` and the web UI on `http://localhost:4173`. 
-
-A named volume (`arc-data`) persists the global registry, indexes, and cloned repos at `/data/arc` inside the server container. To make repos on your host machine indexable, set `WORKSPACE_DIR` before bringing the stack up:
-
-```bash
-WORKSPACE_DIR=$HOME/code docker compose up -d
-# Mounts the workspace inside the container.
-docker compose exec arc-server arc index /workspace/my-repo
+### Cursor
+Add this entry to your global configuration file (`~/.cursor/mcp.json`):
+```json
+{
+  "mcpServers": {
+    "arceus": {
+      "command": "npx",
+      "args": ["-y", "arceus-s@latest", "mcp"]
+    }
+  }
+}
 ```
 
-### Versioning & Supply-Chain Protection
+### OpenCode
+Add this to your global client config (`~/.config/opencode/config.json`):
+```json
+{
+  "mcp": {
+    "arceus": {
+      "type": "local",
+      "command": ["arc", "mcp"]
+    }
+  }
+}
+```
 
-Both images are signed with [Cosign keyless signing][cosign-keyless] using the workflow's GitHub OIDC identity, and shipped with build provenance and SBOM attestations. This protects against supply-chain attacks. Always verify before pulling:
+---
+
+## CLI Command Dictionary
+
+The `arc` CLI provides subcommands grouped by function:
+
+### Indexing & Ingestion
+*   `arc analyze [path]`: Parses a repository and constructs the local graph index.
+*   `arc analyze --force`: Re-runs the indexer, discarding existing database cache.
+*   `arc analyze --embeddings`: Ingests the codebase and calculates semantic vector embeddings (slower, improves semantic queries).
+*   `arc analyze --skip-embeddings`: Index without creating vector embeddings.
+*   `arc analyze --skip-git`: Force index a target folder even if it is not a Git repository.
+*   `arc index`: Registers an already-indexed directory (`.arc/`) into the global registry.
+
+### Daemon & Server Controls
+*   `arc mcp`: Starts the Model Context Protocol (MCP) server over standard I/O.
+*   `arc serve`: Launches the local HTTP server on port `4747` for Web UI connections.
+*   `arc stop`: Terminates the active serving process listening on port `4747` (freeing up the port).
+
+### Graph & Project Administration
+*   `arc list`: Lists all indexed repositories stored in the global registry.
+*   `arc status`: Outputs index freshness and statistics for the current repository.
+*   `arc clean`: Removes database index files for the current folder.
+*   `arc clean --all --force`: Wipes all repository indexes from your machine.
+*   `arc wiki [path]`: Generates a static documentation wiki from your codebase's relational graph.
+
+### Monorepo & Group Synchronization
+*   `arc group create <name>`: Initializes a group of microservices/repositories.
+*   `arc group add <group> <hierarchyPath> <registryName>`: Adds a repo to a microservice group.
+*   `arc group remove <group> <hierarchyPath>`: Removes a repo from a group.
+*   `arc group list [name]`: Shows configured repository groups.
+*   `arc group sync <name>`: Resolves interfaces and extracts contract mappings across services.
+*   `arc group contracts <name>`: Inspects inter-service contract models and references.
+*   `arc group query <name> <query>`: Executes cross-repo search queries over a synchronized group.
+*   `arc group status <name>`: Shows status and integrity statistics for grouped repositories.
+
+---
+
+## Model Context Protocol (MCP) API
+
+Arceus exposes **16 tools**, **7 resources**, and **2 prompts** to AI agents:
+
+### 1. Injected Tools
+*   `list_repos`: Discovers all codebases registered on the host system.
+*   `query`: Runs hybrid search (BM25 lexical keyword + semantic vector embedding + Reciprocal Rank Fusion).
+*   `context`: Pulls a 360° symbol view including inheritance, references, and calling chains.
+*   `impact`: Analyzes codebase-wide blast radius before modifications.
+*   `detect_changes`: Computes how active Git changes modify code architecture and execution flows.
+*   `rename`: Executes refactoring renames across multiple files utilizing graph references.
+*   `cypher`: Executes raw Cypher graph queries on the local codebase database.
+*   `group_list` / `group_sync` / `group_contracts` / `group_query` / `group_status`: Controls microservice group query resolution and contract extraction.
+
+### 2. Context Resources
+*   `arc://repos`: Complete register of indexable repositories.
+*   `arc://repo/{name}/context`: Basic system diagnostics, size, and tool configurations.
+*   `arc://repo/{name}/clusters`: System modularity groups mapped by density.
+*   `arc://repo/{name}/cluster/{name}`: Names and locations of symbols inside a cluster.
+*   `arc://repo/{name}/processes`: Mapped execution routines and entries.
+*   `arc://repo/{name}/process/{name}`: Step-by-step trace of a codebase process.
+*   `arc://repo/{name}/schema`: Relational database schema layout.
+
+### 3. Agent Guided Prompts
+*   `detect_impact`: Pre-commit analysis of modification risks, file targets, and affected call structures.
+*   `generate_map`: Generates system documentation with embedded Mermaid architectural flowcharts.
+
+---
+
+## Language Support & Feature Grid
+
+| Language | Module Imports | Symbol Bindings | Export Scopes | Interface Heritage | Type Resolution | Constructor Tracking | Entry Heuristics |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| **TypeScript** | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
+| **JavaScript** | ✓ | ✓ | ✓ | ✓ | — | ✓ | ✓ |
+| **Python** | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
+| **Java** | ✓ | ✓ | ✓ | ✓ | ✓ | — | ✓ |
+| **Kotlin** | ✓ | ✓ | ✓ | ✓ | ✓ | — | ✓ |
+| **C#** | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
+| **Go** | ✓ | — | ✓ | ✓ | ✓ | ✓ | ✓ |
+| **Rust** | ✓ | ✓ | ✓ | ✓ | ✓ | — | ✓ |
+| **PHP** | ✓ | ✓ | ✓ | — | ✓ | ✓ | ✓ |
+| **Ruby** | ✓ | — | ✓ | ✓ | — | — | ✓ |
+| **Swift** | — | — | ✓ | ✓ | ✓ | ✓ | ✓ |
+| **C** | — | — | ✓ | — | ✓ | ✓ | ✓ |
+| **C++** | — | — | ✓ | ✓ | ✓ | — | ✓ |
+| **Dart** | ✓ | — | ✓ | ✓ | ✓ | — | ✓ |
+
+---
+
+## Security, Privacy & Supply-Chain Trust
+
+### 1. Data Protection
+*   All indexing, code parsing, and database transactions are processed entirely on your local machine.
+*   No telemetry, source code snippets, or graph schemas are transmitted to external servers.
+*   API keys for LLM services are kept in local storage and accessed directly by your client environment.
+
+### 2. Binary Verification & Signing
+Release builds are signed via keyless signing (using GitHub OIDC identities and [Cosign][cosign-keyless]). Prove supply chain integrity before installation:
 
 ```bash
 cosign verify ghcr.io/Sirius6907/arc:latest \
@@ -379,46 +247,6 @@ cosign verify ghcr.io/Sirius6907/arc:latest \
 ```
 
 [cosign-keyless]: https://docs.sigstore.dev/cosign/signing/overview/
-
----
-
-## Supported Languages
-
-| Language | Imports | Named Bindings | Exports | Heritage | Type Annotations | Constructor Inference | Config | Frameworks | Entry Points |
-|----------|---------|----------------|---------|----------|-----------------|---------------------|--------|------------|-------------|
-| TypeScript | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
-| JavaScript | ✓ | ✓ | ✓ | ✓ | — | ✓ | ✓ | ✓ | ✓ |
-| Python | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
-| Java | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | — | ✓ | ✓ |
-| Kotlin | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | — | ✓ | ✓ |
-| C# | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
-| Go | ✓ | — | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
-| Rust | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | — | ✓ | ✓ |
-| PHP | ✓ | ✓ | ✓ | — | ✓ | ✓ | ✓ | ✓ | ✓ |
-| Ruby | ✓ | — | ✓ | ✓ | — | ✓ | — | ✓ | ✓ |
-| Swift | — | — | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
-| C | — | — | ✓ | — | ✓ | ✓ | — | ✓ | ✓ |
-| C++ | — | — | ✓ | ✓ | ✓ | ✓ | — | ✓ | ✓ |
-| Dart | ✓ | — | ✓ | ✓ | ✓ | ✓ | — | ✓ | ✓ |
-
----
-
-## Security & Privacy
-
-- **CLI**: Everything runs locally on your machine. No network calls. Index stored in `.arc/` (gitignored). Global registry at `~/.arc/` stores only paths and metadata.
-- **Web**: Everything runs in your browser. No code uploaded to any server. API keys stored in localStorage only.
-- Open source — audit the code yourself.
-
----
-
-## Acknowledgments
-
-- [Tree-sitter](https://tree-sitter.github.io/) — AST parsing
-- [LadybugDB](https://ladybugdb.com/) — Embedded graph database with vector support (formerly KuzuDB)
-- [Sigma.js](https://www.sigmajs.org/) — WebGL graph rendering
-- [transformers.js](https://huggingface.co/docs/transformers.js) — Browser ML
-- [Graphology](https://graphology.github.io/) — Graph data structures
-- [MCP](https://modelcontextprotocol.io/) — Model Context Protocol
 
 ---
 
