@@ -1,32 +1,5 @@
 # Arceus
 
-**⚠️ Important Notice:** Arceus has NO official cryptocurrency, token, or coin. Any token/coin using the Arceus name on Pump.fun or any other platform is **not affiliated with, endorsed by, or created by** this project or its maintainers. Do not purchase any cryptocurrency claiming association with Arceus.
-
-<div align="center">
-
-  <a href="https://trendshift.io/repositories/19809" target="_blank">
-    <img src="https://trendshift.io/api/badge/repositories/19809" alt="Sirius6907%2FArceus | Trendshift" style="width: 250px; height: 55px;" width="250" height="55"/>
-  </a>
-
-  <h2>Join the official Discord to discuss ideas, issues etc!</h2>
-
-  <a href="https://discord.gg/MgJrmsqr62">
-    <img src="https://img.shields.io/discord/1477255801545429032?color=5865F2&logo=discord&logoColor=white" alt="Discord"/>
-  </a>
-  <a href="https://www.npmjs.com/package/arceus-s">
-    <img src="https://img.shields.io/npm/v/arceus-s.svg" alt="npm version"/>
-  </a>
-  <a href="https://polyformproject.org/licenses/noncommercial/1.0.0/">
-    <img src="https://img.shields.io/badge/License-PolyForm%20Noncommercial-blue.svg" alt="License: PolyForm Noncommercial"/>
-  </a>
-  <a href="https://securityscorecards.dev/viewer/?uri=github.com/Sirius6907/Arceus">
-    <img src="https://api.securityscorecards.dev/projects/github.com/Sirius6907/Arceus/badge" alt="OpenSSF Scorecard"/>
-  </a>
-
-  <p><strong>Enterprise (SaaS & Self-hosted)</strong> - <a href="https://akonlabs.com">akonlabs.com</a></p>
-
-</div>
-
 **Building the nervous system for AI agent context.**
 
 Indexes any codebase into a highly structured knowledge graph—tracking every class, function, call chain, cluster, and cross-file execution flow—then exposes it through smart tools so AI agents never operate blind.
@@ -41,14 +14,9 @@ flowchart LR
 
 > *Arceus provides a deep relational view of your codebase.* Traditional tools help you locate code snippets. Arceus lets you analyze the entire system—because its knowledge graph maps actual compiler-resolved dependencies and execution flows, not just lexical occurrences.
 
-**TL;DR:** The **Web UI** offers a visual graph explorer and a browser-based AI chat. The **CLI + MCP** is designed to make your AI agents reliable. It gives Cursor, Claude Code, Windsurf, and other editors a deep architectural view of your codebase so they stop missing dependencies, breaking call chains, and making blind modifications.
+ The **Web UI** offers a visual graph explorer and a browser-based AI chat. The **CLI + MCP** is designed to make your AI agents reliable. It gives Cursor, Claude Code, Windsurf, and other editors a deep architectural view of your codebase so they stop missing dependencies, breaking call chains, and making blind modifications.
 
 ---
-
-## Star History
-
-[![Star History Chart](https://api.star-history.com/svg?repos=Sirius6907/Arceus&type=date&legend=top-left)](https://www.star-history.com/#Sirius6907/Arceus&type=date&legend=top-left)
-
 ---
 
 ## Two Ways to Use Arceus
@@ -82,11 +50,6 @@ Enterprise includes:
 **Upcoming:**
 - Auto regression forensics
 - End-to-end test generation
-
-👉 Learn more at [akonlabs.com](https://akonlabs.com)
-
-💬 For commercial licensing or enterprise inquiries, ping us on [Discord](https://discord.gg/AAsRVT6fGb) or drop an email at founders@akonlabs.com
-
 ---
 
 ## Development
