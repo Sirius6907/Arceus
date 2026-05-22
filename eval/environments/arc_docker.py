@@ -127,16 +127,16 @@ class ArceusDockerEnvironment(DockerEnvironment):
             logger.info(f"Node.js already available: {output}")
 
     def _install_arc(self):
-        """Install the arc npm package globally."""
-        check = self.execute({"command": "npx arc --version 2>/dev/null || echo 'NOT_FOUND'"})
+        """Install the arceus-s npm package globally."""
+        check = self.execute({"command": "arceus --version 2>/dev/null || arc --version 2>/dev/null || echo 'NOT_FOUND'"})
         if "NOT_FOUND" in check.get("output", ""):
-            logger.info("Installing arc...")
+            logger.info("Installing arceus-s...")
             result = self.execute({
-                "command": "npm install -g arc",
+                "command": "npm install -g arceus-s",
                 "timeout": 60,
             })
             if result.get("returncode", 1) != 0:
-                raise RuntimeError(f"Failed to install arc: {result.get('output', '')}")
+                raise RuntimeError(f"Failed to install arceus-s: {result.get('output', '')}")
 
     def _index_repository(self):
         """Run arc analyze on the repo, using cache if available."""

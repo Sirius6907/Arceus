@@ -99,7 +99,7 @@ const server = createServer(async (req, res) => {
     }
 
     res.writeHead(200, {
-      'Cache-Control': finalPath.includes('/assets/')
+      'Cache-Control': (finalPath.includes('/assets/') || finalPath.includes('\\assets\\'))
         ? 'public, max-age=31536000, immutable'
         : 'no-cache',
       'Content-Type': contentTypes[extname(finalPath)] || 'application/octet-stream',

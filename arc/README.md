@@ -4,7 +4,7 @@
 
 Works with **Cursor**, **Claude Code**, **Codex**, **Windsurf**, **Cline**, **OpenCode**, and any MCP-compatible tool.
 
-[![npm version](https://img.shields.io/npm/v/arc.svg)](https://www.npmjs.com/package/arc)
+[![npm version](https://img.shields.io/npm/v/arceus-s.svg)](https://www.npmjs.com/package/arceus-s)
 [![License: PolyForm Noncommercial](https://img.shields.io/badge/License-PolyForm%20Noncommercial-blue.svg)](https://polyformproject.org/licenses/noncommercial/1.0.0/)
 
 ---
@@ -15,16 +15,33 @@ AI coding tools don't understand your codebase structure. They edit a function w
 
 **Three commands to give your AI agent full codebase awareness.**
 
+## Installation & Naming
+
+Because the command name `arc` is extremely common and already registered by an unrelated package on the public npm registry, **Arceus CLI is published under the package name `arceus-s`**.
+
+When installed globally, npm maps the CLI binary to both `arc` and `arceus`, letting you use the tool natively:
+
+```bash
+# Install globally from npm
+npm install -g arceus-s
+
+# Run commands globally
+arc analyze
+# or: arceus analyze
+```
+
 ## Quick Start
+
+If you prefer to run it without a global installation:
 
 ```bash
 # Index your repo (run from repo root)
-npx arc analyze
+npx arceus-s analyze
 ```
 
 That's it. This indexes the codebase, installs agent skills, registers Claude Code hooks, and creates `AGENTS.md` / `CLAUDE.md` context files — all in one command.
 
-To configure MCP for your editor, run `npx arc setup` once — or set it up manually below.
+To configure MCP for your editor, run `arc setup` once (or use `npx arceus-s setup` if not installed globally).
 
 `arc setup` auto-detects your editors and writes the correct global MCP config. You only need to run it once.
 
@@ -54,16 +71,16 @@ If you prefer to configure manually instead of using `arc setup`:
 
 ```bash
 # macOS / Linux
-claude mcp add arc -- npx -y arc@latest mcp
+claude mcp add arceus -- npx -y arceus-s mcp
 
 # Windows
-claude mcp add arc -- cmd /c npx -y arc@latest mcp
+claude mcp add arceus -- cmd /c npx -y arceus-s mcp
 ```
 
 ### Codex (full support — MCP + skills)
 
 ```bash
-codex mcp add arc -- npx -y arc@latest mcp
+codex mcp add arceus -- npx -y arceus-s mcp
 ```
 
 ### Cursor / Windsurf
@@ -73,9 +90,9 @@ Add to `~/.cursor/mcp.json` (global — works for all projects):
 ```json
 {
   "mcpServers": {
-    "arc": {
+    "arceus": {
       "command": "npx",
-      "args": ["-y", "arc@latest", "mcp"]
+      "args": ["-y", "arceus-s", "mcp"]
     }
   }
 }
@@ -88,9 +105,9 @@ Add to `~/.config/opencode/config.json`:
 ```json
 {
   "mcp": {
-    "arc": {
+    "arceus": {
       "command": "npx",
-      "args": ["-y", "arc@latest", "mcp"]
+      "args": ["-y", "arceus-s", "mcp"]
     }
   }
 }
@@ -246,9 +263,9 @@ merges are skipped.)
 
 ```bash
 # Try the latest release candidate (pre-stable — may change at any time)
-npm install -g arc@rc
+npm install -g arceus-s@rc
 # — or —
-npx arc@rc analyze
+npx arceus-s@rc analyze
 ```
 
 Release-candidate versions follow the standard semver prerelease format
@@ -268,9 +285,9 @@ certain npm/arborist versions ([npm/cli#8126](https://github.com/npm/cli/issues/
 It is fixed in **arc v1.6.2+**. Upgrade to the latest version:
 
 ```bash
-npx arc@latest analyze          # always uses the newest release
+npx arceus-s analyze          # always uses the newest release
 # — or —
-npm install -g arc@latest       # upgrade a global install
+npm install -g arceus-s       # upgrade a global install
 ```
 
 If you still hit npm install issues after upgrading, these generic workarounds
@@ -285,7 +302,7 @@ npm cache clean --force              # clear a possibly corrupt cache
 
 Some optional language grammars (Dart, Kotlin, Swift) require native compilation. If they fail, Arceus still works — those languages will be skipped.
 
-If `npm install -g arc` fails on native modules:
+If `npm install -g arceus-s` fails on native modules:
 
 ```bash
 # Ensure build tools are available (Linux/macOS)
@@ -293,7 +310,7 @@ If `npm install -g arc` fails on native modules:
 # macOS: xcode-select --install
 
 # Retry installation
-npm install -g arc
+npm install -g arceus-s
 ```
 
 ### Analyze warns about unavailable FTS or VECTOR extensions
@@ -309,10 +326,10 @@ Configure the behavior with two environment variables:
 
 ```bash
 # Offline/airgapped: never reach the network for extensions
-ARC_LBUG_EXTENSION_INSTALL=load-only npx arc analyze
+ARC_LBUG_EXTENSION_INSTALL=load-only npx arceus-s analyze
 
 # Slow network: give extension downloads more time
-ARC_LBUG_EXTENSION_INSTALL_TIMEOUT_MS=30000 npx arc analyze
+ARC_LBUG_EXTENSION_INSTALL_TIMEOUT_MS=30000 npx arceus-s analyze
 ```
 
 ### Analysis runs out of memory
@@ -321,7 +338,7 @@ For very large repositories:
 
 ```bash
 # Increase Node.js heap size
-NODE_OPTIONS="--max-old-space-size=16384" npx arc analyze
+NODE_OPTIONS="--max-old-space-size=16384" npx arceus-s analyze
 
 # Exclude large directories
 echo "vendor/" >> .arcignore
@@ -334,11 +351,11 @@ By default the walker skips files larger than **512 KB** (see log line `Skipped 
 
 ```bash
 # CLI flag (takes precedence over the env var)
-npx arc analyze --max-file-size 2048     # skip only files > 2 MB
+npx arceus-s analyze --max-file-size 2048     # skip only files > 2 MB
 
 # Environment variable (persists across commands)
 export ARC_MAX_FILE_SIZE=2048
-npx arc analyze
+npx arceus-s analyze
 ```
 
 Values above **32768 KB (32 MB)** are clamped to the tree-sitter parser ceiling; invalid values fall back to the 512 KB default with a one-time warning. When an override is active, `analyze` prints the effective threshold in its startup banner (e.g. `ARC_MAX_FILE_SIZE: effective threshold 2048KB (default 512KB)`).
@@ -349,11 +366,11 @@ Worker parse timeouts are recoverable. Arceus retries stalled worker jobs with b
 
 ```bash
 # CLI flag, in seconds
-npx arc analyze --worker-timeout 60
+npx arceus-s analyze --worker-timeout 60
 
 # Environment variable, in milliseconds
 export ARC_WORKER_SUB_BATCH_TIMEOUT_MS=60000
-npx arc analyze
+npx arceus-s analyze
 ```
 
 For repositories with very large source files, `ARC_WORKER_SUB_BATCH_MAX_BYTES` controls the worker job byte budget. The default is **8388608 bytes (8 MB)**.

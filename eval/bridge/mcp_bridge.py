@@ -55,7 +55,7 @@ class MCPBridge:
             # Find arc binary
             arc_cmd = self._find_arc_command()
             if not arc_cmd:
-                logger.error("Arceus not found. Install with: npm install -g arc")
+                logger.error("Arceus not found. Install with: npm install -g arceus-s")
                 return False
 
             self.process = subprocess.Popen(

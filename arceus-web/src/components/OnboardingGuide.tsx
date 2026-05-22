@@ -201,7 +201,7 @@ interface OnboardingGuideProps {
 }
 
 export const OnboardingGuide = ({ isPolling }: OnboardingGuideProps) => {
-  const primary = isDev ? 'npm run --prefix arc serve' : 'npx arc@latest serve';
+  const primary = isDev ? 'npm run --prefix arc serve' : 'npx arceus-s serve';
   const termLabel = isDev ? 'Start backend' : 'Terminal';
 
   // Step states: step 1 = copy command, step 2 = run/wait, step 3 = auto-connect
@@ -264,7 +264,7 @@ export const OnboardingGuide = ({ isPolling }: OnboardingGuideProps) => {
                 <div className="h-px flex-1 bg-border-subtle" />
               </div>
               <TerminalWindow
-                command="npm install -g arc && arc serve"
+                command="npm install -g arceus-s && arceus serve"
                 label="Global install"
                 isActive={false}
               />

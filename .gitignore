@@ -109,31 +109,7 @@ local_docs/
 .context/
 arc/web/
 
-# Rebrand exclusions: temporary and agent logs
-.akg/
+# Temp test directories and packed tarballs
 .sisyphus/
-
-# Private credentials and security files
-*.pem
-*.key
-*.token
-*.keytab
-*.pfx
-*.p12
-credentials*
-secrets*
-
-# Exclude test suites
-arc/test/
-arceus-web/e2e/
-eval/tests/
-docker-server.test.mjs
-*.test.ts
-*.test.tsx
-*.test.js
-*.test.mjs
-*.spec.ts
-*.spec.tsx
-*.spec.js
-*.spec.mjs
+*.tgz
 

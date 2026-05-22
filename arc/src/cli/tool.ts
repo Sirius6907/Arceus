@@ -17,7 +17,7 @@
 
 import { writeSync } from 'node:fs';
 import { LocalBackend } from '../mcp/local/local-backend.js';
-import { cliError } from './cli-message.js';
+import { cliError, binName } from './cli-message.js';
 
 let _backend: LocalBackend | null = null;
 
@@ -26,7 +26,7 @@ async function getBackend(): Promise<LocalBackend> {
   _backend = new LocalBackend();
   const ok = await _backend.init();
   if (!ok) {
-    cliError('Arceus: No indexed repositories found. Run: arc analyze');
+    cliError(`Arceus: No indexed repositories found. Run: ${binName} analyze`);
     process.exit(1);
   }
   return _backend;
@@ -68,7 +68,7 @@ export async function queryCommand(
   },
 ): Promise<void> {
   if (!queryText?.trim()) {
-    cliError('Usage: arc query <search_query>');
+    cliError(`Usage: ${binName} query <search_query>`);
     process.exit(1);
   }
 
@@ -94,7 +94,7 @@ export async function contextCommand(
   },
 ): Promise<void> {
   if (!name?.trim() && !options?.uid) {
-    cliError('Usage: arc context <symbol_name> [--uid <uid>] [--file <path>]');
+    cliError(`Usage: ${binName} context <symbol_name> [--uid <uid>] [--file <path>]`);
     process.exit(1);
   }
 
@@ -119,7 +119,7 @@ export async function impactCommand(
   },
 ): Promise<void> {
   if (!target?.trim()) {
-    cliError('Usage: arc impact <symbol_name> [--direction upstream|downstream]');
+    cliError(`Usage: ${binName} impact <symbol_name> [--direction upstream|downstream]`);
     process.exit(1);
   }
 
@@ -141,7 +141,7 @@ export async function impactCommand(
         (err instanceof Error ? err.message : String(err)) || 'Impact analysis failed unexpectedly',
       target: { name: target },
       direction: options?.direction || 'upstream',
-      suggestion: 'Try reducing --depth or using arc context <symbol> as a fallback',
+      suggestion: `Try reducing --depth or using ${binName} context <symbol> as a fallback`,
     });
     process.exit(1);
   }
@@ -154,7 +154,7 @@ export async function cypherCommand(
   },
 ): Promise<void> {
   if (!query?.trim()) {
-    cliError('Usage: arc cypher <cypher_query>');
+    cliError(`Usage: ${binName} cypher <cypher_query>`);
     process.exit(1);
   }
 

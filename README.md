@@ -1,4 +1,5 @@
 # Arceus
+
 **⚠️ Important Notice:** Arceus has NO official cryptocurrency, token, or coin. Any token/coin using the Arceus name on Pump.fun or any other platform is **not affiliated with, endorsed by, or created by** this project or its maintainers. Do not purchase any cryptocurrency claiming association with Arceus.
 
 <div align="center">
@@ -12,8 +13,8 @@
   <a href="https://discord.gg/MgJrmsqr62">
     <img src="https://img.shields.io/discord/1477255801545429032?color=5865F2&logo=discord&logoColor=white" alt="Discord"/>
   </a>
-  <a href="https://www.npmjs.com/package/arc">
-    <img src="https://img.shields.io/npm/v/arc.svg" alt="npm version"/>
+  <a href="https://www.npmjs.com/package/arceus-s">
+    <img src="https://img.shields.io/npm/v/arceus-s.svg" alt="npm version"/>
   </a>
   <a href="https://polyformproject.org/licenses/noncommercial/1.0.0/">
     <img src="https://img.shields.io/badge/License-PolyForm%20Noncommercial-blue.svg" alt="License: PolyForm Noncommercial"/>
@@ -26,20 +27,21 @@
 
 </div>
 
-**Building nervous system for agent context.**
+**Building the nervous system for AI agent context.**
 
-Indexes any codebase into a knowledge graph — every dependency, call chain, cluster, and execution flow — then exposes it through smart tools so AI agents never miss code.
+Indexes any codebase into a highly structured knowledge graph—tracking every class, function, call chain, cluster, and cross-file execution flow—then exposes it through smart tools so AI agents never operate blind.
 
+```mermaid
+flowchart LR
+    CodeBase["Raw Codebase Files"] -->|"Tree-Sitter AST Parsing"| Indexer["Arceus Indexer"]
+    Indexer -->|"Symbol Resolution & Heuristics"| LadybugDB[("LadybugDB Graph & Vector DB")]
+    LadybugDB -->|"Smart Context & Cypher"| MCPServer["MCP Server & CLI"]
+    MCPServer -->|"High-Confidence Architectural View"| AIAgent["AI Agents (Cursor, Claude Code, etc.)"]
+```
 
+> *Arceus provides a deep relational view of your codebase.* Traditional tools help you locate code snippets. Arceus lets you analyze the entire system—because its knowledge graph maps actual compiler-resolved dependencies and execution flows, not just lexical occurrences.
 
-
-https://github.com/user-attachments/assets/172685ba-8e54-4ea7-9ad1-e31a3398da72
-
-
-
-> *Like DeepWiki, but deeper.* DeepWiki helps you *understand* code. Arceus lets you *analyze* it — because a knowledge graph tracks every relationship, not just descriptions.
-
-**TL;DR:** The **Web UI** is a quick way to chat with any repo. The **CLI + MCP** is how you make your AI agent actually reliable — it gives Cursor, Claude Code, Codex, and friends a deep architectural view of your codebase so they stop missing dependencies, breaking call chains, and shipping blind edits. Even smaller models get full architectural clarity, making it compete with Goliath models.
+**TL;DR:** The **Web UI** offers a visual graph explorer and a browser-based AI chat. The **CLI + MCP** is designed to make your AI agents reliable. It gives Cursor, Claude Code, Windsurf, and other editors a deep architectural view of your codebase so they stop missing dependencies, breaking call chains, and making blind modifications.
 
 ---
 
@@ -47,18 +49,19 @@ https://github.com/user-attachments/assets/172685ba-8e54-4ea7-9ad1-e31a3398da72
 
 [![Star History Chart](https://api.star-history.com/svg?repos=Sirius6907/Arceus&type=date&legend=top-left)](https://www.star-history.com/#Sirius6907/Arceus&type=date&legend=top-left)
 
+---
 
 ## Two Ways to Use Arceus
 
 |                   | **CLI + MCP**                                            | **Web UI**                                             |
 | ----------------- | -------------------------------------------------------------- | ------------------------------------------------------------ |
-| **What**    | Index repos locally, connect AI agents via MCP                 | Visual graph explorer + AI chat in browser                   |
-| **For**     | Daily development with Cursor, Claude Code, Codex, Windsurf, OpenCode | Quick exploration, demos, one-off analysis                   |
-| **Scale**   | Full repos, any size                                           | Limited by browser memory (~5k files), or unlimited via backend mode |
-| **Install** | `npm install -g arc`                                    | No install — [arc.vercel.app](https://arc.vercel.app) |
-| **Storage** | LadybugDB native (fast, persistent)                               | LadybugDB WASM (in-memory, per session)                         |
-| **Parsing** | Tree-sitter native bindings                                    | Tree-sitter WASM                                             |
-| **Privacy** | Everything local, no network                                   | Everything in-browser, no server                             |
+| **What**          | Index repos locally, connect AI agents via MCP                 | Visual graph explorer + AI chat in browser                   |
+| **For**           | Daily development with Cursor, Claude Code, Windsurf, OpenCode  | Quick exploration, demos, one-off analysis                   |
+| **Scale**         | Full repos, any size                                           | Limited by browser memory (~5k files), or unlimited via backend mode |
+| **Install**       | `npm install -g arceus-s`                                    | No install — browser-only or connect to local `arc serve`    |
+| **Storage**       | LadybugDB native (fast, persistent)                            | LadybugDB WASM (in-memory, per session)                      |
+| **Parsing**       | Tree-sitter native bindings                                    | Tree-sitter WASM                                             |
+| **Privacy**       | Everything local, no network                                   | Everything in-browser, no server                             |
 
 > **Bridge mode:** `arc serve` connects the two — the web UI auto-detects the local server and can browse all your CLI-indexed repos without re-uploading or re-indexing.
 
@@ -90,26 +93,43 @@ Enterprise includes:
 
 - [ARCHITECTURE.md](ARCHITECTURE.md) — packages, index → graph → MCP flow, where to change code
 - [RUNBOOK.md](RUNBOOK.md) — analyze, embeddings, stale index, MCP recovery, CI snippets
-- [GUARDRAILS.md](GUARDRAILS.md) — safety rules and operational “Signs” for contributors and agents
+- [GUARDRAILS.md](GUARDRAILS.md) — safety rules and operational "Signs" for contributors and agents
 - [CONTRIBUTING.md](CONTRIBUTING.md) — license, setup, commits, and pull requests
 - [TESTING.md](TESTING.md) — test commands for `arc` and `arceus-web`
 
-## CLI + MCP (recommended)
+---
+
+## CLI + MCP (Recommended)
 
 The CLI indexes your repository and runs an MCP server that gives AI agents deep codebase awareness.
+
+### Naming & Global Command Installer
+Because the command name `arc` is extremely common and already registered by an unrelated package on the public npm registry, **Arceus CLI is published under the package name `arceus-s`**. 
+
+When installed globally, npm maps the CLI binary to the command **`arc`**, letting you use the tool natively:
+```bash
+# Install globally from npm
+npm install -g arceus-s
+
+# Run commands globally
+arc analyze
+arc setup
+```
 
 ### Quick Start
 
 ```bash
 # Index your repo (run from repo root)
-npx arc analyze
+npx arceus-s analyze
 ```
 
-That's it. This indexes the codebase, installs agent skills, registers Claude Code hooks, and creates `AGENTS.md` / `CLAUDE.md` context files — all in one command.
+This indexes the codebase, installs agent skills, registers Claude Code hooks, and creates `AGENTS.md` / `CLAUDE.md` context files — all in one command.
 
-To configure MCP for your editor, run `npx arc setup` once — or set it up manually below.
+To configure MCP for your editors, run `arc setup` once (or use `npx arceus-s setup` if not installed globally).
 
-> **Faster install (no C++ toolchain needed):** set `ARC_SKIP_OPTIONAL_GRAMMARS=1` before `npm install -g arc` to skip the native `tree-sitter-dart` and `tree-sitter-proto` builds. Dart/Proto files won't be parsed, but install completes in seconds without `python3`/`make`/`g++`. Strict `=1` only — any other value falls through to the rebuild.
+> **Faster install (no C++ toolchain needed):** set `ARC_SKIP_OPTIONAL_GRAMMARS=1` before installing globally or running with npx to skip the native `tree-sitter-dart` and `tree-sitter-proto` builds. Dart/Proto files won't be parsed, but install completes in seconds without local compilation toolchains.
+
+---
 
 ### MCP Setup
 
@@ -117,45 +137,36 @@ To configure MCP for your editor, run `npx arc setup` once — or set it up manu
 
 ### Editor Support
 
-| Editor                | MCP | Skills | Hooks (auto-augment) | Support        |
-| --------------------- | --- | ------ | -------------------- | -------------- |
+| Editor          | MCP | Skills | Hooks (auto-augment) | Support        |
+| --------------- | --- | ------ | -------------------- | -------------- |
 | **Claude Code** | Yes | Yes    | Yes (PreToolUse + PostToolUse) | **Full** |
 | **Cursor**      | Yes | Yes    | Yes (postToolUse, [manual install](arceus-cursor-integration/README.md#hook-install)) | **Full** |
 | **Codex**       | Yes | Yes    | —                   | MCP + Skills   |
-| **Windsurf**    | Yes | —     | —                   | MCP            |
+| **Windsurf**    | Yes | —      | —                   | MCP            |
 | **OpenCode**    | Yes | Yes    | —                   | MCP + Skills   |
 
 > **Claude Code** gets the deepest integration: MCP tools + agent skills + PreToolUse hooks that enrich searches with graph context + PostToolUse hooks that detect a stale index after commits and prompt the agent to reindex.
 
-## Community Integrations
+---
 
-Built by the community — not officially maintained, but worth checking out.
+### Manual Editor Setup (MCP)
 
-| Project | Author | Description |
-|---------|--------|-------------|
-| [pi-arc](https://github.com/tintinweb/pi-arc) | [@tintinweb](https://github.com/tintinweb) | Arceus plugin for [pi](https://pi.dev) — `pi install npm:pi-arc` |
-| [arc-stable-ops](https://github.com/ShunsukeHayashi/arc-stable-ops) | [@ShunsukeHayashi](https://github.com/ShunsukeHayashi) | Stable ops & deployment workflows (Miyabi ecosystem) |
-
-> Have a project built on Arceus? Open a PR to add it here!
-
-If you prefer manual configuration:
-
-> **Recommended for fastest startup:** install arc globally (`npm i -g arc`) and run `arc setup` — this writes an absolute-path MCP config that bypasses `npx` entirely. The pinned-`npx` snippets below are a quickstart fallback; on a cold cache the `npx` install can exceed Claude Code's `MCP_TIMEOUT` default (~30s).
+> **Recommended for fastest startup:** install `arceus-s` globally (`npm i -g arceus-s`) and run `arc setup` — this writes an absolute-path MCP config that bypasses `npx` entirely. The pinned-`npx` snippets below are a quickstart fallback; on a cold cache the `npx` install can exceed editor timeout limits.
 
 **Claude Code** (full support — MCP + skills + hooks):
 
 ```bash
 # macOS / Linux
-claude mcp add arc -- npx -y arc@latest mcp
+claude mcp add arceus -- npx -y arceus-s@latest mcp
 
 # Windows
-claude mcp add arc -- cmd /c npx -y arc@latest mcp
+claude mcp add arceus -- cmd /c npx -y arceus-s@latest mcp
 ```
 
 **Codex** (full support — MCP + skills):
 
 ```bash
-codex mcp add arc -- npx -y arc@latest mcp
+codex mcp add arceus -- npx -y arceus-s@latest mcp
 ```
 
 **Cursor** (`~/.cursor/mcp.json` — global, works for all projects):
@@ -163,9 +174,9 @@ codex mcp add arc -- npx -y arc@latest mcp
 ```json
 {
   "mcpServers": {
-    "arc": {
+    "arceus": {
       "command": "npx",
-      "args": ["-y", "arc@latest", "mcp"]
+      "args": ["-y", "arceus-s@latest", "mcp"]
     }
   }
 }
@@ -176,7 +187,7 @@ codex mcp add arc -- npx -y arc@latest mcp
 ```json
 {
   "mcp": {
-    "arc": {
+    "arceus": {
       "type": "local",
       "command": ["arc", "mcp"]
     }
@@ -187,72 +198,68 @@ codex mcp add arc -- npx -y arc@latest mcp
 **Codex** (`~/.codex/config.toml` for system scope, or `.codex/config.toml` for project scope):
 
 ```toml
-[mcp_servers.arc]
+[mcp_servers.arceus]
 command = "npx"
-args = ["-y", "arc@latest", "mcp"]
+args = ["-y", "arceus-s@latest", "mcp"]
 ```
+
+---
 
 ### CLI Commands
 
 ```bash
-arc setup                   # Configure MCP for your editors (one-time)
-arc analyze [path]          # Index a repository (or update stale index)
-arc analyze --force         # Force full re-index
-arc analyze --skills        # Generate repo-specific skill files from detected communities
-arc analyze --skip-embeddings  # Skip embedding generation (faster)
+arc setup                     # Configure MCP for your editors (one-time)
+arc analyze [path]            # Index a repository (or update stale index)
+arc analyze --force           # Force full re-index
+arc analyze --skills          # Generate repo-specific skill files from detected communities
+arc analyze --skip-embeddings # Skip embedding generation (faster)
 arc analyze --skip-agents-md  # Preserve custom AGENTS.md/CLAUDE.md arc section edits
 arc analyze --skip-git        # Index folders that are not Git repositories
-arc analyze --embeddings    # Enable embedding generation (slower, better search)
-arc analyze --verbose       # Log skipped files when parsers are unavailable
+arc analyze --embeddings      # Enable embedding generation (slower, better search)
+arc analyze --verbose         # Log skipped files when parsers are unavailable
 arc analyze --worker-timeout 60  # Increase worker idle timeout for slow parses
-arc mcp                     # Start MCP server (stdio) — serves all indexed repos
-arc serve                   # Start local HTTP server (multi-repo) for web UI connection
-arc list                    # List all indexed repositories
-arc status                  # Show index status for current repo
-arc clean                   # Delete index for current repo
-arc clean --all --force     # Delete all indexes
-arc wiki [path]             # Generate repository wiki from knowledge graph
-arc wiki --model <model>    # Wiki with custom LLM model (default: gpt-4o-mini)
-arc wiki --base-url <url>   # Wiki with custom LLM API base URL
-arc publish                 # Notify the understand-quickly registry (opt-in, see below)
+arc mcp                       # Start MCP server (stdio) — serves all indexed repos
+arc serve                     # Start local HTTP server (multi-repo) for web UI connection
+arc list                      # List all indexed repositories
+arc status                    # Show index status for current repo
+arc clean                     # Delete index for current repo
+arc clean --all --force       # Delete all indexes
+arc wiki [path]               # Generate repository wiki from knowledge graph
+arc wiki --model <model>      # Wiki with custom LLM model (default: gpt-4o-mini)
+arc wiki --base-url <url>     # Wiki with custom LLM API base URL
+arc publish                   # Notify the understand-quickly registry (opt-in)
 
 # Repository groups (multi-repo / monorepo service tracking)
 arc group create <name>                                   # Create a repository group
-arc group add <group> <groupPath> <registryName>          # Add a repo to a group. <groupPath> is a hierarchy path (e.g. hr/hiring/backend); <registryName> is the repo's name from the registry (see `arc list`)
-arc group remove <group> <groupPath>                      # Remove a repo from a group by its hierarchy path
+arc group add <group> <groupPath> <registryName>          # Add a repo to a group.
+arc group remove <group> <groupPath>                      # Remove a repo from a group by path
 arc group list [name]                                     # List groups, or show one group's config
-arc group sync <name>                                     # Extract contracts and match across repos/services
-arc group contracts <name>  # Inspect extracted contracts and cross-links
-arc group query <name> <q>  # Search execution flows across all repos in a group
-arc group status <name>     # Check staleness of repos in a group
+arc group sync <name>                                     # Extract contracts and match across services
+arc group contracts <name>                                # Inspect extracted contracts and cross-links
+arc group query <name> <q>                                # Search execution flows across all repos in a group
+arc group status <name>                                   # Check staleness of repos in a group
 ```
 
-If `analyze` reports a worker parse timeout on a large or unusual repository, it keeps running and falls back safely. To give slow worker jobs more time, use `arc analyze --worker-timeout 60` or set `ARC_WORKER_SUB_BATCH_TIMEOUT_MS=60000`. For very large files, `ARC_WORKER_SUB_BATCH_MAX_BYTES` controls the worker job byte budget.
-
-#### Publishing to understand-quickly (opt-in)
-
-[`looptech-ai/understand-quickly`](https://github.com/looptech-ai/understand-quickly) is a public registry of code-knowledge graphs that lists `arc@1` as a first-class format. After registering your repo once (`npx @understand-quickly/cli add` or the [wizard](https://looptech-ai.github.io/understand-quickly/add.html)), `arc publish` fires a single `repository_dispatch` event so the registry resyncs your entry on demand instead of waiting for the nightly job.
-
-It is opt-in and a no-op without `UNDERSTAND_QUICKLY_TOKEN` — a fine-grained GitHub PAT with `Repository dispatches: write` on the registry repo. Nothing else happens; no graph file is uploaded. See the [protocol spec](https://github.com/looptech-ai/understand-quickly/blob/main/docs/integrations/protocol.md) for the full contract.
+---
 
 ### What Your AI Agent Gets
 
 **16 tools** exposed via MCP (11 per-repo + 5 group):
 
 | Tool               | What It Does                                                      | `repo` Param |
-| ------------------ | ----------------------------------------------------------------- | -------------- |
-| `list_repos`     | Discover all indexed repositories                                 | —             |
-| `query`          | Process-grouped hybrid search (BM25 + semantic + RRF)             | Optional       |
-| `context`        | 360-degree symbol view — categorized refs, process participation | Optional       |
-| `impact`         | Blast radius analysis with depth grouping and confidence          | Optional       |
-| `detect_changes` | Git-diff impact — maps changed lines to affected processes       | Optional       |
-| `rename`         | Multi-file coordinated rename with graph + text search            | Optional       |
-| `cypher`         | Raw Cypher graph queries                                          | Optional       |
-| `group_list`     | List configured repository groups                                 | —             |
-| `group_sync`     | Extract contracts and match across repos/services                 | —             |
-| `group_contracts`| Inspect extracted contracts and cross-links                       | —             |
-| `group_query`    | Search execution flows across all repos in a group                | —             |
-| `group_status`   | Check staleness of repos in a group                               | —             |
+| ------------------ | ----------------------------------------------------------------- | ------------ |
+| `list_repos`       | Discover all indexed repositories                                 | —            |
+| `query`            | Process-grouped hybrid search (BM25 + semantic + RRF)             | Optional     |
+| `context`          | 360-degree symbol view — references, hierarchy, and flows         | Optional     |
+| `impact`           | Blast radius analysis with depth grouping and confidence          | Optional     |
+| `detect_changes`   | Git-diff impact — maps changed lines to affected processes        | Optional     |
+| `rename`           | Multi-file coordinated rename with graph + text search            | Optional     |
+| `cypher`           | Raw Cypher graph queries                                          | Optional     |
+| `group_list`       | List configured repository groups                                 | —            |
+| `group_sync`       | Extract contracts and match across repos/services                 | —            |
+| `group_contracts`  | Inspect extracted contracts and cross-links                       | —            |
+| `group_query`      | Search execution flows across all repos in a group                | —            |
+| `group_status`     | Check staleness of repos in a group                               | —            |
 
 > When only one repo is indexed, the `repo` parameter is optional. With multiple repos, specify which one: `query({query: "auth", repo: "my-app"})`.
 
@@ -260,31 +267,26 @@ It is opt-in and a no-op without `UNDERSTAND_QUICKLY_TOKEN` — a fine-grained G
 
 | Resource                                  | Purpose                                              |
 | ----------------------------------------- | ---------------------------------------------------- |
-| `arc://repos`                      | List all indexed repositories (read this first)      |
-| `arc://repo/{name}/context`        | Codebase stats, staleness check, and available tools |
-| `arc://repo/{name}/clusters`       | All functional clusters with cohesion scores         |
-| `arc://repo/{name}/cluster/{name}` | Cluster members and details                          |
-| `arc://repo/{name}/processes`      | All execution flows                                  |
-| `arc://repo/{name}/process/{name}` | Full process trace with steps                        |
-| `arc://repo/{name}/schema`         | Graph schema for Cypher queries                      |
+| `arc://repos`                             | List all indexed repositories (read this first)      |
+| `arc://repo/{name}/context`               | Codebase stats, staleness check, and available tools |
+| `arc://repo/{name}/clusters`              | All functional clusters with cohesion scores         |
+| `arc://repo/{name}/cluster/{name}`        | Cluster members and details                          |
+| `arc://repo/{name}/processes`             | All execution flows                                  |
+| `arc://repo/{name}/process/{name}`        | Full process trace with steps                        |
+| `arc://repo/{name}/schema`                | Graph schema for Cypher queries                      |
 
 **2 MCP prompts** for guided workflows:
 
-| Prompt            | What It Does                                                              |
-| ----------------- | ------------------------------------------------------------------------- |
-| `detect_impact` | Pre-commit change analysis — scope, affected processes, risk level       |
-| `generate_map`  | Architecture documentation from the knowledge graph with mermaid diagrams |
+| Prompt             | What It Does                                                              |
+| ------------------ | ------------------------------------------------------------------------- |
+| `detect_impact`    | Pre-commit change analysis — scope, affected processes, risk level        |
+| `generate_map`     | Architecture documentation from the knowledge graph with mermaid diagrams |
 
 **4 agent skills** installed to `.claude/skills/` automatically:
-
 - **Exploring** — Navigate unfamiliar code using the knowledge graph
 - **Debugging** — Trace bugs through call chains
 - **Impact Analysis** — Analyze blast radius before changes
 - **Refactoring** — Plan safe refactors using dependency mapping
-
-**Repo-specific skills** generated with `--skills`:
-
-When you run `arc analyze --skills`, Arceus detects the functional areas of your codebase (via Leiden community detection) and generates a `SKILL.md` file for each one under `.claude/skills/generated/`. Each skill describes a module's key files, entry points, execution flows, and cross-area connections — so your AI agent gets targeted context for the exact area of code you're working in. Skills are regenerated on each `--skills` run to stay current with the codebase.
 
 ---
 
@@ -332,45 +334,37 @@ flowchart TD
     ConnB -->|"queries"| RepoB
 ```
 
-**How it works:** Each `arc analyze` stores the index in `.arc/` inside the repo (portable, gitignored) and registers a pointer in `~/.arc/registry.json`. When an AI agent starts, the MCP server reads the registry and can serve any indexed repo. LadybugDB connections are opened lazily on first query and evicted after 5 minutes of inactivity (max 5 concurrent). If only one repo is indexed, the `repo` parameter is optional on all tools — agents don't need to change anything.
+**How it works:** Each `arc analyze` stores the index in `.arc/` inside the repo (portable, gitignored) and registers a pointer in `~/.arc/registry.json`. When an AI agent starts, the MCP server reads the registry and can serve any indexed repo. LadybugDB connections are opened lazily on first query and evicted after 5 minutes of inactivity (max 5 concurrent).
 
 ---
 
-## Web UI (browser-based)
+## Web UI (Browser-based)
 
 A client-side graph explorer and AI chat — your code never leaves your machine.
 
-**Try it now:** [arc.vercel.app](https://arc.vercel.app) — run `npx arc@latest serve` locally and the page auto-connects to your local backend.
-
-<img width="2550" height="1343" alt="arc_img" src="https://github.com/user-attachments/assets/cc5d637d-e0e5-48e6-93ff-5bcfdb929285" />
+**Try it now:** [arc.vercel.app](https://arc.vercel.app) — run `arc serve` (or `npx arceus-s serve`) locally and the page auto-connects to your local backend.
 
 Or run the frontend locally:
 
 ```bash
-git clone https://github.com/Sirius6907/arc.git
-cd arc/arceus-shared && npm install && npm run build
+git clone https://github.com/Sirius6907/Arceus.git
+cd Arceus/arceus-shared && npm install && npm run build
 cd ../arceus-web && npm install
 npm run dev
 # Then in another terminal, start the backend the frontend connects to:
-npx arc@latest serve
+npx arceus-s@latest serve
 ```
+
+---
 
 ## Docker
 
-The official Docker setup ships **two signed images** orchestrated by `docker-compose.yaml`. Each image is published to both **GitHub Container Registry** (GHCR) and **Docker Hub** — same build, same digest, same Cosign signature — so pick whichever registry you prefer:
+The official Docker setup ships **two signed images** orchestrated by `docker-compose.yaml`. Each image is published to both **GitHub Container Registry** (GHCR) and **Docker Hub**:
 
-| Purpose                                                                | GHCR (default in `docker-compose.yaml`)       | Docker Hub mirror                           |
-| ---------------------------------------------------------------------- | --------------------------------------------- | ------------------------------------------- |
-| CLI / `arc serve` backend (HTTP API on port `4747`, MCP, indexer) | `ghcr.io/Sirius6907/arc:latest`     | `akonlabs/arc:latest`                  |
-| Static web UI (port `4173`)                                            | `ghcr.io/Sirius6907/arceus-web:latest` | `akonlabs/arceus-web:latest`              |
-
-> **Heads-up — image rename.** Earlier releases published the web UI under
-> `ghcr.io/Sirius6907/arc`. Starting with the introduction of the
-> bundled backend, that slug now hosts the CLI/server image and the UI moved
-> to `ghcr.io/Sirius6907/arceus-web`. The previous tags remain
-> available for pulling, but new versions are only published under the new
-> slugs. Update your `docker run` / compose files accordingly (or just adopt
-> the bundled compose).
+| Purpose                                                           | GHCR (default in `docker-compose.yaml`)       | Docker Hub mirror                      |
+| ----------------------------------------------------------------- | --------------------------------------------- | -------------------------------------- |
+| CLI / `arc serve` backend (HTTP API on port `4747`, MCP, indexer) | `ghcr.io/Sirius6907/arc:latest`               | `akonlabs/arc:latest`                  |
+| Static web UI (port `4173`)                                       | `ghcr.io/Sirius6907/arceus-web:latest`        | `akonlabs/arceus-web:latest`           |
 
 ### One-command setup
 
@@ -378,205 +372,31 @@ The official Docker setup ships **two signed images** orchestrated by `docker-co
 docker compose up -d
 ```
 
-This starts the server on `http://localhost:4747` and the web UI on
-`http://localhost:4173`. The UI auto-detects the server because the browser
-runs on the host and reaches the container via the mapped port.
+This starts the server on `http://localhost:4747` and the web UI on `http://localhost:4173`. 
 
-A named volume (`arc-data`) persists the global registry, indexes, and
-cloned repos at `/data/arc` inside the server container. To make repos on
-your host machine indexable, set `WORKSPACE_DIR` before bringing the stack up:
+A named volume (`arc-data`) persists the global registry, indexes, and cloned repos at `/data/arc` inside the server container. To make repos on your host machine indexable, set `WORKSPACE_DIR` before bringing the stack up:
 
 ```bash
 WORKSPACE_DIR=$HOME/code docker compose up -d
-# Inside the server container the directory is mounted read-only at /workspace.
+# Mounts the workspace inside the container.
 docker compose exec arc-server arc index /workspace/my-repo
 ```
 
-### Direct `docker run`
+### Versioning & Supply-Chain Protection
+
+Both images are signed with [Cosign keyless signing][cosign-keyless] using the workflow's GitHub OIDC identity, and shipped with build provenance and SBOM attestations. This protects against supply-chain attacks. Always verify before pulling:
 
 ```bash
-# Server
-docker run --rm -d \
-  --name arc-server \
-  -p 4747:4747 \
-  -v arc-data:/data/arc \
-  ghcr.io/Sirius6907/arc:latest
-
-# Web UI
-docker run --rm -d \
-  --name arceus-web \
-  -p 4173:4173 \
-  ghcr.io/Sirius6907/arceus-web:latest
-```
-
-Optional env file (override image tags, container names, ports, workspace dir):
-
-```bash
-cp .env.example .env
-docker compose --env-file .env up -d
-```
-
-### Versioning & supply-chain protection
-
-The Docker images are version-locked to the npm package:
-
-- Stable images are **only published from `vX.Y.Z` git tags** (via `docker.yml`
-  triggered directly by the tag push), and the workflow refuses to build unless
-  the tag exactly matches `arc/package.json`'s version. So
-  `ghcr.io/Sirius6907/arc:1.6.2` (and its Docker Hub mirror
-  `akonlabs/arc:1.6.2`) is byte-for-byte the same release as
-  `npm install arc@1.6.2` — no drift, no floating builds from `main`.
-  Both registries receive the same digest from a single build step, so you can
-  pull from either and the signature verifies identically.
-- Release-candidate images (e.g. `:1.7.0-rc.1`) are published alongside each
-  RC npm release. They are built by `release-candidate.yml` calling `docker.yml`
-  as a reusable workflow after the RC tag is created and pushed.
-- `:latest` is auto-promoted only from non-prerelease tags by the Docker
-  metadata action, so it always points at a real, npm-published version.
-
-Both images are signed with [Cosign keyless signing][cosign-keyless] using the
-workflow's GitHub OIDC identity, and shipped with build provenance and SBOM
-attestations. **This is your protection against supply-chain attacks**: even if
-an attacker republishes a same-named image elsewhere (or somehow pushes to a
-typo-squatted registry), they cannot forge a Cosign signature tied to
-`Sirius6907/Arceus`'s `docker.yml`. Always verify before pulling into
-sensitive environments:
-
-**Stable releases** — signed from the `v*` tag ref:
-
-```bash
-cosign verify ghcr.io/Sirius6907/arc:1.6.2 \
-  --certificate-identity-regexp '^https://github\.com/Sirius6907/Arceus/\.github/workflows/docker\.yml@refs/tags/v[0-9]+\.[0-9]+\.[0-9]+(-[a-zA-Z0-9.]+)?$' \
-  --certificate-oidc-issuer https://token.actions.githubusercontent.com
-
-# Same signature verifies the Docker Hub mirror (identical digest):
-cosign verify docker.io/akonlabs/arc:1.6.2 \
+cosign verify ghcr.io/Sirius6907/arc:latest \
   --certificate-identity-regexp '^https://github\.com/Sirius6907/Arceus/\.github/workflows/docker\.yml@refs/tags/v[0-9]+\.[0-9]+\.[0-9]+(-[a-zA-Z0-9.]+)?$' \
   --certificate-oidc-issuer https://token.actions.githubusercontent.com
 ```
-
-The regex pins the certificate identity to this repo's `docker.yml` workflow
-**run from a `v*` tag** — rejecting unsigned images, images signed by other
-workflows, and images signed from unprotected refs. It is identical for both
-registries because both sets of tags were signed at the same digest in one
-workflow run.
-
-**Release candidates** — signed from `refs/heads/main` (the caller's ref when
-`release-candidate.yml` invokes `docker.yml` as a reusable workflow):
-
-```bash
-cosign verify ghcr.io/Sirius6907/arc:1.7.0-rc.1 \
-  --certificate-identity 'https://github.com/Sirius6907/Arceus/.github/workflows/docker.yml@refs/heads/main' \
-  --certificate-oidc-issuer https://token.actions.githubusercontent.com
-```
-
-You can also inspect the build provenance and SBOM:
-
-```bash
-cosign download attestation ghcr.io/Sirius6907/arc:1.6.2 \
-  --predicate-type https://slsa.dev/provenance/v1
-```
-
-#### Kubernetes: enforce signatures at admission
-
-For Kubernetes deployments, ship the bundled
-[`ClusterImagePolicy`](deploy/kubernetes/cluster-image-policy.yaml) so the
-[Sigstore policy-controller][policy-controller] rejects any Arceus pod whose
-image is not signed by this repo's `docker.yml` running from a `vX.Y.Z` tag —
-the same identity the `cosign verify` snippet above pins.
-
-```bash
-# 1. Install the controller (one-time, cluster-wide)
-helm repo add sigstore https://sigstore.github.io/helm-charts && helm repo update
-helm install policy-controller -n cosign-system --create-namespace \
-  sigstore/policy-controller
-
-# 2. Opt your namespace in
-kubectl label namespace <your-ns> policy.sigstore.dev/include=true
-
-# 3. Apply the policy
-kubectl apply -f deploy/kubernetes/cluster-image-policy.yaml
-```
-
-After this, attempting to deploy an unsigned image — or one signed by anything
-other than `Sirius6907/Arceus`'s `docker.yml` at a `v*` tag — fails the
-admission webhook before a pod is ever created. This turns the verifiable
-signature into an enforced policy, which is the supply-chain control most
-clusters actually need.
 
 [cosign-keyless]: https://docs.sigstore.dev/cosign/signing/overview/
-[policy-controller]: https://docs.sigstore.dev/policy-controller/overview/
-
-### Files
-
-- [Dockerfile.web](Dockerfile.web) — builds `arceus-shared` and `arceus-web`, then serves the production frontend.
-- [Dockerfile.cli](Dockerfile.cli) — builds the CLI/server (with its native deps) and runs `arc serve --host 0.0.0.0`.
-- [docker-compose.yaml](docker-compose.yaml) — starts both signed images side by side.
-- [.env.example](.env.example) — overrides for image names, container names, ports, and the workspace mount.
-
-The web UI uses the same indexing pipeline as the CLI but runs entirely in WebAssembly (Tree-sitter WASM, LadybugDB WASM, in-browser embeddings). It's great for quick exploration but limited by browser memory for larger repos.
-
-**Local Backend Mode:** Run `arc serve` and open the web UI locally — it auto-detects the server and shows all your indexed repos, with full AI chat support. No need to re-upload or re-index. The agent's tools (Cypher queries, search, code navigation) route through the backend HTTP API automatically.
 
 ---
 
-## The Problem Arceus Solves
-
-Tools like **Cursor**, **Claude Code**, **Codex**, **Cline**, **Roo Code**, and **Windsurf** are powerful — but they don't truly know your codebase structure.
-
-**What happens:**
-
-1. AI edits `UserService.validate()`
-2. Doesn't know 47 functions depend on its return type
-3. **Breaking changes ship**
-
-### Traditional Graph RAG vs Arceus
-
-Traditional approaches give the LLM raw graph edges and hope it explores enough. Arceus **precomputes structure at index time** — clustering, tracing, scoring — so tools return complete context in one call:
-
-```mermaid
-flowchart TB
-    subgraph Traditional["Traditional Graph RAG"]
-        direction TB
-        U1["User: What depends on UserService?"]
-        U1 --> LLM1["LLM receives raw graph"]
-        LLM1 --> Q1["Query 1: Find callers"]
-        Q1 --> Q2["Query 2: What files?"]
-        Q2 --> Q3["Query 3: Filter tests?"]
-        Q3 --> Q4["Query 4: High-risk?"]
-        Q4 --> OUT1["Answer after 4+ queries"]
-    end
-
-    subgraph GN["Arceus Smart Tools"]
-        direction TB
-        U2["User: What depends on UserService?"]
-        U2 --> TOOL["impact UserService upstream"]
-        TOOL --> PRECOMP["Pre-structured response:
-        8 callers, 3 clusters, all 90%+ confidence"]
-        PRECOMP --> OUT2["Complete answer, 1 query"]
-    end
-```
-
-**Core innovation: Precomputed Relational Intelligence**
-
-- **Reliability** — LLM can't miss context, it's already in the tool response
-- **Token efficiency** — No 10-query chains to understand one function
-- **Model democratization** — Smaller LLMs work because tools do the heavy lifting
-
----
-
-## How It Works
-
-Arceus builds a complete knowledge graph of your codebase through a multi-phase indexing pipeline:
-
-1. **Structure** — Walks the file tree and maps folder/file relationships
-2. **Parsing** — Extracts functions, classes, methods, and interfaces using Tree-sitter ASTs
-3. **Resolution** — Resolves imports, function calls, heritage, constructor inference, and `self`/`this` receiver types across files with language-aware logic
-4. **Clustering** — Groups related symbols into functional communities
-5. **Processes** — Traces execution flows from entry points through call chains
-6. **Search** — Builds hybrid search indexes for fast retrieval
-
-### Supported Languages
+## Supported Languages
 
 | Language | Imports | Named Bindings | Exports | Heritage | Type Annotations | Constructor Inference | Config | Frameworks | Entry Points |
 |----------|---------|----------------|---------|----------|-----------------|---------------------|--------|------------|-------------|
@@ -594,179 +414,6 @@ Arceus builds a complete knowledge graph of your codebase through a multi-phase 
 | C | — | — | ✓ | — | ✓ | ✓ | — | ✓ | ✓ |
 | C++ | — | — | ✓ | ✓ | ✓ | ✓ | — | ✓ | ✓ |
 | Dart | ✓ | — | ✓ | ✓ | ✓ | ✓ | — | ✓ | ✓ |
-
-**Imports** — cross-file import resolution · **Named Bindings** — `import { X as Y }` / re-export tracking · **Exports** — public/exported symbol detection · **Heritage** — class inheritance, interfaces, mixins · **Type Annotations** — explicit type extraction for receiver resolution · **Constructor Inference** — infer receiver type from constructor calls (`self`/`this` resolution included for all languages) · **Config** — language toolchain config parsing (tsconfig, go.mod, etc.) · **Frameworks** — AST-based framework pattern detection · **Entry Points** — entry point scoring heuristics
-
----
-
-## Tool Examples
-
-### Impact Analysis
-
-```
-impact({target: "UserService", direction: "upstream", minConfidence: 0.8})
-
-TARGET: Class UserService (src/services/user.ts)
-
-UPSTREAM (what depends on this):
-  Depth 1 (WILL BREAK):
-    handleLogin [CALLS 90%] -> src/api/auth.ts:45
-    handleRegister [CALLS 90%] -> src/api/auth.ts:78
-    UserController [CALLS 85%] -> src/controllers/user.ts:12
-  Depth 2 (LIKELY AFFECTED):
-    authRouter [IMPORTS] -> src/routes/auth.ts
-```
-
-Options: `maxDepth`, `minConfidence`, `relationTypes` (`CALLS`, `IMPORTS`, `EXTENDS`, `IMPLEMENTS`), `includeTests`
-
-### Process-Grouped Search
-
-```
-query({query: "authentication middleware"})
-
-processes:
-  - summary: "LoginFlow"
-    priority: 0.042
-    symbol_count: 4
-    process_type: cross_community
-    step_count: 7
-
-process_symbols:
-  - name: validateUser
-    type: Function
-    filePath: src/auth/validate.ts
-    process_id: proc_login
-    step_index: 2
-
-definitions:
-  - name: AuthConfig
-    type: Interface
-    filePath: src/types/auth.ts
-```
-
-### Context (360-degree Symbol View)
-
-```
-context({name: "validateUser"})
-
-symbol:
-  uid: "Function:validateUser"
-  kind: Function
-  filePath: src/auth/validate.ts
-  startLine: 15
-
-incoming:
-  calls: [handleLogin, handleRegister, UserController]
-  imports: [authRouter]
-
-outgoing:
-  calls: [checkPassword, createSession]
-
-processes:
-  - name: LoginFlow (step 2/7)
-  - name: RegistrationFlow (step 3/5)
-```
-
-### Detect Changes (Pre-Commit)
-
-```
-detect_changes({scope: "all"})
-
-summary:
-  changed_count: 12
-  affected_count: 3
-  changed_files: 4
-  risk_level: medium
-
-changed_symbols: [validateUser, AuthService, ...]
-affected_processes: [LoginFlow, RegistrationFlow, ...]
-```
-
-### Rename (Multi-File)
-
-```
-rename({symbol_name: "validateUser", new_name: "verifyUser", dry_run: true})
-
-status: success
-files_affected: 5
-total_edits: 8
-graph_edits: 6     (high confidence)
-text_search_edits: 2  (review carefully)
-changes: [...]
-```
-
-### Cypher Queries
-
-```cypher
--- Find what calls auth functions with high confidence
-MATCH (c:Community {heuristicLabel: 'Authentication'})<-[:CodeRelation {type: 'MEMBER_OF'}]-(fn)
-MATCH (caller)-[r:CodeRelation {type: 'CALLS'}]->(fn)
-WHERE r.confidence > 0.8
-RETURN caller.name, fn.name, r.confidence
-ORDER BY r.confidence DESC
-```
-
----
-
-## Wiki Generation
-
-Generate LLM-powered documentation from your knowledge graph:
-
-```bash
-# Requires an LLM API key (OPENAI_API_KEY, etc.)
-arc wiki
-
-# Use a custom model or provider
-arc wiki --model gpt-4o
-arc wiki --base-url https://api.anthropic.com/v1
-
-# Force full regeneration
-arc wiki --force
-
-
-# Increase the timeout or retries for large codebase or slow LLM providers
-arc wiki --timeout <seconds> # Per-attempt LLM request timeout in seconds (default: 60) 
-arc wiki --retries <n>      # Max LLM retry attempts per request (default: 3)
-
-```
-
-The wiki generator reads the indexed graph structure, groups files into modules via LLM, generates per-module documentation pages, and creates an overview page — all with cross-references to the knowledge graph.
-
----
-
-## Tech Stack
-
-| Layer                     | CLI                                   | Web                                     |
-| ------------------------- | ------------------------------------- | --------------------------------------- |
-| **Runtime**         | Node.js (native)                      | Browser (WASM)                          |
-| **Parsing**         | Tree-sitter native bindings           | Tree-sitter WASM                        |
-| **Database**        | LadybugDB native                         | LadybugDB WASM                             |
-| **Embeddings**      | HuggingFace transformers.js (GPU/CPU) | transformers.js (WebGPU/WASM)           |
-| **Search**          | BM25 + semantic + RRF                 | BM25 + semantic + RRF                   |
-| **Agent Interface** | MCP (stdio)                           | LangChain ReAct agent                   |
-| **Visualization**   | —                                    | Sigma.js + Graphology (WebGL)           |
-| **Frontend**        | —                                    | React 18, TypeScript, Vite, Tailwind v4 |
-| **Clustering**      | Graphology                            | Graphology                              |
-| **Concurrency**     | Worker threads + async                | Web Workers + Comlink                   |
-
----
-
-## Roadmap
-
-### Actively Building
-
-- [ ] **LLM Cluster Enrichment** — Semantic cluster names via LLM API
-- [ ] **AST Decorator Detection** — Parse @Controller, @Get, etc.
-- [ ] **Incremental Indexing** — Only re-index changed files
-
-### Recently Completed
-
-- [X] Constructor-Inferred Type Resolution, `self`/`this` Receiver Mapping
-- [X] Wiki Generation, Multi-File Rename, Git-Diff Impact Analysis
-- [X] Process-Grouped Search, 360-Degree Context, Claude Code Hooks
-- [X] Multi-Repo MCP, Zero-Config Setup, 14 Language Support
-- [X] Community Detection, Process Detection, Confidence Scoring
-- [X] Hybrid Search, Vector Index
 
 ---
 

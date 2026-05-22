@@ -26,7 +26,7 @@ import { getMaxFileSizeBannerMessage } from '../core/ingestion/utils/max-file-si
 import { warnMissingOptionalGrammars } from './optional-grammars.js';
 import { glob } from 'glob';
 import fs from 'fs/promises';
-import { cliError } from './cli-message.js';
+import { cliError, binName } from './cli-message.js';
 import { isHfDownloadFailure } from '../core/embeddings/hf-env.js';
 
 // Capture stderr.write at module load BEFORE anything (LadybugDB native
@@ -570,7 +570,7 @@ export const analyzeCommand = async (inputPath?: string, options?: AnalyzeOption
     try {
       await fs.access(getGlobalRegistryPath());
     } catch {
-      console.log('\n  Tip: Run `arc setup` to configure MCP for your editor.');
+      console.log(`\n  Tip: Run \`${binName} setup\` to configure MCP for your editor.`);
     }
 
     console.log('');
@@ -593,8 +593,8 @@ export const analyzeCommand = async (inputPath?: string, options?: AnalyzeOption
         `\n  Registry name collision:\n` +
           `    "${err.registryName}" is already used by "${err.existingPath}".\n\n` +
           `  Options:\n` +
-          `    • Pick a different alias:  arc analyze --name <alias>\n` +
-          `    • Allow the duplicate:     arc analyze --allow-duplicate-name  (leaves "-r ${err.registryName}" ambiguous)\n`,
+          `    • Pick a different alias:  ${binName} analyze --name <alias>\n` +
+          `    • Allow the duplicate:     ${binName} analyze --allow-duplicate-name  (leaves "-r ${err.registryName}" ambiguous)\n`,
         { registryName: err.registryName, existingPath: err.existingPath },
       );
       process.exitCode = 1;
@@ -608,7 +608,7 @@ export const analyzeCommand = async (inputPath?: string, options?: AnalyzeOption
       writeFatalToStderr('Analysis did not finalize', err);
       realStderrWrite(
         `\n  Diagnostic checklist:\n` +
-          `    1. Re-run "arc analyze" - transient native errors often clear on retry.\n` +
+          `    1. Re-run "${binName} analyze" - transient native errors often clear on retry.\n` +
           `    2. Inspect ${err.storagePath} - a leftover lbug.wal indicates an aborted write.\n` +
           `    3. If the failure persists, run with NODE_OPTIONS="--max-old-space-size=8192 --trace-exit"\n` +
           `       and attach the trace to the Arceus issue tracker.\n\n`,
@@ -627,8 +627,8 @@ export const analyzeCommand = async (inputPath?: string, options?: AnalyzeOption
           `  (e.g. behind a corporate proxy or a regional firewall).\n` +
           `  Suggestions:\n` +
           `    1. Set HF_ENDPOINT to a mirror and retry:\n` +
-          `         HF_ENDPOINT=https://hf-mirror.com npx arc analyze --embeddings\n` +
-          `         (Windows: set HF_ENDPOINT=https://hf-mirror.com && npx arc analyze --embeddings)\n` +
+          `         HF_ENDPOINT=https://hf-mirror.com npx arceus-s analyze --embeddings\n` +
+          `         (Windows: set HF_ENDPOINT=https://hf-mirror.com && npx arceus-s analyze --embeddings)\n` +
           `    2. Check your proxy / VPN settings.\n` +
           `    3. Once downloaded the model is cached — future runs work offline.\n`,
         { recoveryHint: 'hf-endpoint-unreachable' },
@@ -674,8 +674,8 @@ export const analyzeCommand = async (inputPath?: string, options?: AnalyzeOption
           `  Suggestions:\n` +
           `    1. Clear the npm cache:    npm cache clean --force\n` +
           `    2. Update npm:             npm install -g npm@latest\n` +
-          `    3. Reinstall arc:     npm install -g arc@latest\n` +
-          `    4. Or try npx directly:    npx arc@latest analyze\n`,
+          `    3. Reinstall Arceus:       npm install -g arceus-s\n` +
+          `    4. Or try npx directly:    npx arceus-s analyze\n`,
         { recoveryHint: 'npm-resolution' },
       );
     } else if (
@@ -686,8 +686,8 @@ export const analyzeCommand = async (inputPath?: string, options?: AnalyzeOption
       cliError(
         `  A required module could not be loaded. The installation may be corrupt.\n` +
           `  Suggestions:\n` +
-          `    1. Reinstall:   npm install -g arc@latest\n` +
-          `    2. Clear cache: npm cache clean --force && npx arc@latest analyze\n`,
+          `    1. Reinstall:   npm install -g arceus-s\n` +
+          `    2. Clear cache: npm cache clean --force && npx arceus-s analyze\n`,
         { recoveryHint: 'module-not-found' },
       );
     }

@@ -27,7 +27,17 @@
  * data on stdout for piping (`arc query | jq`). User banners on
  * stdout would corrupt that pipeline.
  */
+import path from 'node:path';
 import { logger } from '../core/logger.js';
+
+export const binName = (() => {
+  if (!process.argv[1]) return 'arc';
+  const baseWithoutExt = path.basename(process.argv[1], path.extname(process.argv[1]));
+  if (baseWithoutExt === 'index' || baseWithoutExt === 'cli') {
+    return 'arc';
+  }
+  return baseWithoutExt;
+})();
 
 function writeStderr(msg: string): void {
   // Direct write — bypassing `console.*` so it cannot be intercepted by

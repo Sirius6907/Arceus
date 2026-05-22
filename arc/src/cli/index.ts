@@ -4,6 +4,7 @@
 // Removing it from here improves MCP server startup time significantly.
 
 import { createRequire } from 'node:module';
+import { binName } from './cli-message.js';
 
 const _require = createRequire(import.meta.url);
 const pkg = _require('../../package.json');
@@ -88,7 +89,7 @@ function parseArgs(args: string[], cmd: string) {
 }
 
 function printMainHelp() {
-  console.log(`Usage: arc <command> [options]
+  console.log(`Usage: ${binName} <command> [options]
 
 Arceus local CLI and MCP server
 
@@ -118,13 +119,13 @@ Options:
   -h, --help                       Show this help information
   -v, --version                    Show version number
 
-Run "arc <command> --help" for detailed option information.`);
+Run "${binName} <command> --help" for detailed option information.`);
 }
 
 function printCommandHelp(cmd: string) {
   switch (cmd) {
     case 'setup':
-      console.log(`Usage: arc setup [options]
+      console.log(`Usage: ${binName} setup [options]
 
 One-time setup: configure MCP for Cursor, Claude Code, OpenCode, Codex
 
@@ -132,7 +133,7 @@ Options:
   -h, --help            Show this help information`);
       break;
     case 'analyze':
-      console.log(`Usage: arc analyze [path] [options]
+      console.log(`Usage: ${binName} analyze [path] [options]
 
 Index a repository (full analysis)
 
@@ -157,7 +158,7 @@ Options:
   --embedding-device <device>   Embedding device: auto, cpu, dml, cuda, or wasm`);
       break;
     case 'index':
-      console.log(`Usage: arc index [path...] [options]
+      console.log(`Usage: ${binName} index [path...] [options]
 
 Register an existing .arc/ folder into the global registry (no re-analysis needed)
 
@@ -166,7 +167,7 @@ Options:
   --allow-non-git       Allow registering folders that are not Git repositories`);
       break;
     case 'serve':
-      console.log(`Usage: arc serve [options]
+      console.log(`Usage: ${binName} serve [options]
 
 Start local HTTP server for web UI connection
 
@@ -175,7 +176,7 @@ Options:
   --host <host>         Bind address (default: 127.0.0.1)`);
       break;
     case 'clean':
-      console.log(`Usage: arc clean [options]
+      console.log(`Usage: ${binName} clean [options]
 
 Delete Arceus index for current repo
 
@@ -184,7 +185,7 @@ Options:
   --all                 Clean all indexed repos`);
       break;
     case 'remove':
-      console.log(`Usage: arc remove <target> [options]
+      console.log(`Usage: ${binName} remove <target> [options]
 
 Delete the Arceus index for a registered repo (by alias, name, or absolute path)
 
@@ -192,7 +193,7 @@ Options:
   -f, --force           Skip confirmation prompt`);
       break;
     case 'wiki':
-      console.log(`Usage: arc wiki [path] [options]
+      console.log(`Usage: ${binName} wiki [path] [options]
 
 Generate repository wiki from knowledge graph
 
@@ -213,12 +214,12 @@ Options:
   --review                      Stop after grouping to review module structure before generating pages`);
       break;
     case 'augment':
-      console.log(`Usage: arc augment <pattern>
+      console.log(`Usage: ${binName} augment <pattern>
 
 Augment a search pattern with knowledge graph context`);
       break;
     case 'publish':
-      console.log(`Usage: arc publish [path] [options]
+      console.log(`Usage: ${binName} publish [path] [options]
 
 Notify the understand-quickly registry that this repo has a fresh Arceus index.
 Uses UNDERSTAND_QUICKLY_TOKEN environment variable for registry authorization.
@@ -228,7 +229,7 @@ Options:
   --skip-git                    Treat cwd as the repo root and skip parent git-root discovery`);
       break;
     case 'query':
-      console.log(`Usage: arc query <search_query> [options]
+      console.log(`Usage: ${binName} query <search_query> [options]
 
 Search the knowledge graph for execution flows related to a concept
 
@@ -240,7 +241,7 @@ Options:
   --content             Include full symbol source code`);
       break;
     case 'context':
-      console.log(`Usage: arc context [options] [name]
+      console.log(`Usage: ${binName} context [options] [name]
 
 360-degree view of a code symbol: callers, callees, processes
 
@@ -251,7 +252,7 @@ Options:
   --content             Include full symbol source code`);
       break;
     case 'impact':
-      console.log(`Usage: arc impact <target> [options]
+      console.log(`Usage: ${binName} impact <target> [options]
 
 Blast radius analysis: what breaks if you change a symbol
 
@@ -262,7 +263,7 @@ Options:
   --include-tests       Include test files in results`);
       break;
     case 'cypher':
-      console.log(`Usage: arc cypher <query> [options]
+      console.log(`Usage: ${binName} cypher <query> [options]
 
 Execute raw Cypher query against the knowledge graph
 
@@ -271,7 +272,7 @@ Options:
       break;
     case 'detect-changes':
     case 'detect_changes':
-      console.log(`Usage: arc detect-changes|detect_changes [options]
+      console.log(`Usage: ${binName} detect-changes|detect_changes [options]
 
 Map git diff hunks to indexed symbols and affected execution flows
 
@@ -281,7 +282,7 @@ Options:
   -r, --repo <name>     Target repository`);
       break;
     case 'eval-server':
-      console.log(`Usage: arc eval-server [options]
+      console.log(`Usage: ${binName} eval-server [options]
 
 Start lightweight HTTP server for fast tool calls during evaluation
 
@@ -290,7 +291,7 @@ Options:
   --idle-timeout <seconds>      Auto-shutdown after N seconds idle (default: 0)`);
       break;
     case 'group':
-      console.log(`Usage: arc group <subcommand> [options]
+      console.log(`Usage: ${binName} group <subcommand> [options]
 
 Manage repository groups for cross-index impact analysis
 
@@ -309,10 +310,29 @@ Subcommands:
 }
 
 async function runCLI() {
+  // Anti-rebranding runtime protection
+  const authorTarget = ['Chan', 'dan', ' ', 'Ku', 'mar', ' ', 'Be', 'he', 'ra'].join('');
+  const repoTarget = ['Sir', 'ius', '69', '07', '/', 'Arc', 'eus'].join('');
+  const nameTarget = ['arc', 'eus', '-', 's'].join('');
+  if (
+    pkg.author !== authorTarget ||
+    pkg.name !== nameTarget ||
+    !pkg.homepage?.includes(repoTarget) ||
+    !pkg.repository?.url?.includes(repoTarget)
+  ) {
+    console.error('\x1b[31m%s\x1b[0m', '----------------------------------------------------------------------');
+    console.error('\x1b[31m%s\x1b[0m', 'ERROR: Unauthorized rebranding detected.');
+    console.error('\x1b[31m%s\x1b[0m', `Arceus is licensed only under ownership of ${authorTarget}.`);
+    console.error('\x1b[31m%s\x1b[0m', `Original Repository: https://github.com/${repoTarget}`);
+    console.error('\x1b[31m%s\x1b[0m', '----------------------------------------------------------------------');
+    process.exit(1);
+  }
+
   const args = process.argv.slice(2);
 
   if (args.length === 0) {
     printMainHelp();
+    process.exitCode = 1;
     return;
   }
 
@@ -468,7 +488,7 @@ async function runCLI() {
     }
     default: {
       console.error(`Unknown command: ${cmd}`);
-      console.error('Run "arc --help" for detailed option information.');
+      console.error(`Run "${binName} --help" for detailed option information.`);
       process.exitCode = 1;
     }
   }

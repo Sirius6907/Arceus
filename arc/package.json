@@ -1,5 +1,5 @@
 {
-  "name": "arc",
+  "name": "arceus-s",
   "version": "1.6.4",
   "description": "Graph-powered code intelligence for AI agents. Index any codebase, query via MCP or CLI.",
   "author": "Chandan Kumar Behera",
@@ -28,6 +28,7 @@
   ],
   "type": "module",
   "bin": {
+    "arceus": "dist/cli/index.js",
     "arc": "dist/cli/index.js"
   },
   "files": [
