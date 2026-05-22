@@ -1,0 +1,22 @@
+name: Setup Arceus Web
+description: Setup Node.js 22, build arceus-shared, install web dependencies
+
+runs:
+  using: composite
+  steps:
+    - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+      with:
+        # Vite 7 requires Node ^20.19.0 || >=22.12.0 (require(esm) support).
+        node-version: 22
+        cache: npm
+        cache-dependency-path: arceus-web/package-lock.json
+
+    - name: Build arceus-shared
+      run: npm install && npm run build
+      shell: bash
+      working-directory: arceus-shared
+
+    - name: Install web dependencies
+      run: npm ci
+      shell: bash
+      working-directory: arceus-web

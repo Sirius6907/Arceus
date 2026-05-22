@@ -1,0 +1,19 @@
+# Native mode — Arceus tools only, no grep enrichment
+#
+# Explicit tools: arc-query, arc-context, arc-impact, arc-cypher
+# Available as fast bash commands (~100ms via eval-server)
+#
+# Use this mode to isolate the value of explicit tools without grep augmentation.
+agent:
+  agent_class: 'eval.agents.arc_agent.ArceusAgent'
+  arc_mode: 'native'
+  step_limit: 30
+  cost_limit: 3.0
+  track_arc_usage: true
+
+environment:
+  environment_class: 'eval.environments.arc_docker.ArceusDockerEnvironment'
+  enable_arc: true
+  skip_embeddings: true
+  arc_timeout: 120
+  eval_server_port: 4848

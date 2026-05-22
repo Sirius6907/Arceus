@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "arc": {
+      "command": "npx",
+      "args": ["-y", "arc@latest", "mcp"]
+    }
+  }
+}

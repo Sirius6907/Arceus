@@ -1,0 +1,17 @@
+dist/
+coverage/
+arc/vendor/
+arc/test/fixtures/
+arceus-web/test/fixtures/
+arceus-web/playwright-report/
+arceus-web/test-results/
+*.d.ts
+*.snap
+*.wasm
+*.md
+.arc/
+.vercel/
+.claude-flow/
+.swarm/
+assets/
+repomix-output*
