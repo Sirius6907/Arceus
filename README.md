@@ -14,9 +14,12 @@ flowchart LR
 
 > *Arceus provides a deep relational view of your codebase.* Traditional tools help you locate code snippets. Arceus lets you analyze the entire system—because its knowledge graph maps actual compiler-resolved dependencies and execution flows, not just lexical occurrences.
 
- The **Web UI** offers a visual graph explorer and a browser-based AI chat. The **CLI + MCP** is designed to make your AI agents reliable. It gives Cursor, Claude Code, Windsurf, and other editors a deep architectural view of your codebase so they stop missing dependencies, breaking call chains, and making blind modifications.
+> The **Web UI** offers a visual graph explorer and a browser-based AI chat. The **CLI + MCP** is designed to make your AI agents reliable. It gives Cursor, Claude Code, Windsurf, and other editors a deep architectural view of your codebase so they stop missing dependencies, breaking call chains, and making blind modifications.
 
 ---
+
+**Live-link:** [arceus-arc.vercel.app](https://arceus-arc.vercel.app)
+
 ---
 
 ## Two Ways to Use Arceus
