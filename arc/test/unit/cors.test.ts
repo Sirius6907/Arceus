@@ -10,7 +10,7 @@
  *   - http://127.0.0.1:<port>         → allowed
  *   - RFC 1918 private network ranges → allowed
  *       10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16
- *   - https://arc.vercel.app     → allowed
+ *   - https://arceus-arc.vercel.app   → allowed
  *   - Everything else                 → rejected
  */
 import { describe, it, expect } from 'vitest';
@@ -51,11 +51,12 @@ describe('isAllowedOrigin: localhost', () => {
 // ─── Deployed site ────────────────────────────────────────────────────
 
 describe('isAllowedOrigin: vercel.app', () => {
-  it('allows https://arc.vercel.app', () => {
-    expect(isAllowedOrigin('https://arc.vercel.app')).toBe(true);
+  it('allows https://arceus-arc.vercel.app', () => {
+    expect(isAllowedOrigin('https://arceus-arc.vercel.app')).toBe(true);
   });
 
   it('rejects other vercel.app subdomains', () => {
+    expect(isAllowedOrigin('https://arc.vercel.app')).toBe(false);
     expect(isAllowedOrigin('https://evil.vercel.app')).toBe(false);
   });
 });

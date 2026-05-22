@@ -1,0 +1,5 @@
+{
+  "installCommand": "echo 'Skipping default install'",
+  "buildCommand": "npm --prefix arceus-shared install && npm --prefix arceus-shared run build && npm --prefix arceus-web install && npm --prefix arceus-web run build",
+  "outputDirectory": "arceus-web/dist"
+}

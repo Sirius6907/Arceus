@@ -69,7 +69,7 @@ export const isAllowedOrigin = (origin: string | undefined): boolean => {
     origin === 'http://127.0.0.1' ||
     origin.startsWith('http://[::1]:') ||
     origin === 'http://[::1]' ||
-    origin === 'https://arc.vercel.app'
+    origin === 'https://arceus-arc.vercel.app'
   ) {
     return true;
   }
@@ -192,7 +192,7 @@ a.ext:hover{text-decoration:underline}
   <div class="terminal"><span class="prompt">$ </span><span class="cmd">cd arceus-web &amp;&amp; npm run build</span></div>
   <div class="link-row">
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-    <a class="ext" href="https://arc.vercel.app" target="_blank" rel="noopener noreferrer">arc.vercel.app</a>
+    <a class="ext" href="https://arceus-arc.vercel.app" target="_blank" rel="noopener noreferrer">arceus-arc.vercel.app</a>
     <span style="color:#5a5a70">— connects to this server</span>
   </div>
 </div>
@@ -979,8 +979,10 @@ export const createServer = async (port: number, host: string = '127.0.0.1') => 
             res.once('close', abortStreaming);
 
             try {
-              await withLbugDb(lbugPath, async () =>
-                streamGraphNdjson(res, includeContent, abortController.signal),
+              await withLbugDb(
+                lbugPath,
+                async () => streamGraphNdjson(res, includeContent, abortController.signal),
+                { readOnly: true },
               );
               if (!abortController.signal.aborted && !res.writableEnded) {
                 res.end();
@@ -993,7 +995,9 @@ export const createServer = async (port: number, host: string = '127.0.0.1') => 
             return;
           }
 
-          const graph = await withLbugDb(lbugPath, async () => buildGraph(includeContent));
+          const graph = await withLbugDb(lbugPath, async () => buildGraph(includeContent), {
+            readOnly: true,
+          });
           res.json(graph);
         } catch (err: any) {
           if (err instanceof ClientDisconnectedError) {
@@ -1033,7 +1037,7 @@ export const createServer = async (port: number, host: string = '127.0.0.1') => 
             return;
           }
           const lbugPath = path.join(entry.storagePath, 'lbug');
-          const result = await withLbugDb(lbugPath, () => executeQuery(cypher));
+          const result = await withLbugDb(lbugPath, () => executeQuery(cypher), { readOnly: true });
           res.json({ result });
         } catch (err: any) {
           res.status(500).json({ error: err.message || 'Query failed' });
@@ -1064,61 +1068,63 @@ export const createServer = async (port: number, host: string = '127.0.0.1') => 
           const mode: string = req.body.mode ?? 'hybrid';
           const enrich: boolean = req.body.enrich !== false;
 
-          const results = await withLbugDb(lbugPath, async () => {
-            let searchResults: any[];
-            let ftsAvailable: boolean | undefined;
+          const results = await withLbugDb(
+            lbugPath,
+            async () => {
+              let searchResults: any[];
+              let ftsAvailable: boolean | undefined;
 
-            if (mode === 'semantic') {
-              const { isEmbedderReady } = await import('../core/embeddings/embedder.js');
-              if (!isEmbedderReady()) {
-                return { searchResults: [] as any[], ftsAvailable: undefined };
-              }
-              const { semanticSearch: semSearch } =
-                await import('../core/embeddings/embedding-pipeline.js');
-              searchResults = await semSearch(executeQuery, query, limit);
-              searchResults = searchResults.map((r: any, i: number) => ({
-                ...r,
-                score: r.score ?? 1 - (r.distance ?? 0),
-                rank: i + 1,
-                sources: ['semantic'],
-              }));
-            } else if (mode === 'bm25') {
-              const ftsResponse = await searchFTSFromLbug(query, limit);
-              ftsAvailable = ftsResponse.ftsAvailable;
-              searchResults = ftsResponse.results.map((r: any, i: number) => ({
-                ...r,
-                rank: i + 1,
-                sources: ['bm25'],
-              }));
-            } else {
-              const { isEmbedderReady } = await import('../core/embeddings/embedder.js');
-              if (isEmbedderReady()) {
+              if (mode === 'semantic') {
+                const { isEmbedderReady } = await import('../core/embeddings/embedder.js');
+                if (!isEmbedderReady()) {
+                  return { searchResults: [] as any[], ftsAvailable: undefined };
+                }
                 const { semanticSearch: semSearch } =
                   await import('../core/embeddings/embedding-pipeline.js');
-                searchResults = await hybridSearch(query, limit, executeQuery, semSearch);
-              } else {
+                searchResults = await semSearch(executeQuery, query, limit);
+                searchResults = searchResults.map((r: any, i: number) => ({
+                  ...r,
+                  score: r.score ?? 1 - (r.distance ?? 0),
+                  rank: i + 1,
+                  sources: ['semantic'],
+                }));
+              } else if (mode === 'bm25') {
                 const ftsResponse = await searchFTSFromLbug(query, limit);
                 ftsAvailable = ftsResponse.ftsAvailable;
-                searchResults = ftsResponse.results;
+                searchResults = ftsResponse.results.map((r: any, i: number) => ({
+                  ...r,
+                  rank: i + 1,
+                  sources: ['bm25'],
+                }));
+              } else {
+                const { isEmbedderReady } = await import('../core/embeddings/embedder.js');
+                if (isEmbedderReady()) {
+                  const { semanticSearch: semSearch } =
+                    await import('../core/embeddings/embedding-pipeline.js');
+                  searchResults = await hybridSearch(query, limit, executeQuery, semSearch);
+                } else {
+                  const ftsResponse = await searchFTSFromLbug(query, limit);
+                  ftsAvailable = ftsResponse.ftsAvailable;
+                  searchResults = ftsResponse.results;
+                }
               }
-            }
 
-            if (!enrich) return { searchResults, ftsAvailable };
+              if (!enrich) return { searchResults, ftsAvailable };
 
-            const validLabel = (label: string): boolean =>
-              (NODE_TABLES as readonly string[]).includes(label);
+              const validLabel = (label: string): boolean =>
+                (NODE_TABLES as readonly string[]).includes(label);
 
-            const enriched = await Promise.all(
-              searchResults.slice(0, limit).map(async (r: any) => {
-                const nodeId: string = r.nodeId || r.id || '';
-                const nodeLabel = nodeId.split(':')[0];
-                const enrichment: { connections?: any; cluster?: string; processes?: any[] } = {};
+              const enriched = await Promise.all(
+                searchResults.slice(0, limit).map(async (r: any) => {
+                  const nodeId: string = r.nodeId || r.id || '';
+                  const nodeLabel = nodeId.split(':')[0];
+                  const enrichment: { connections?: any; cluster?: string; processes?: any[] } = {};
 
-                if (!nodeId || !validLabel(nodeLabel)) return { ...r, ...enrichment };
+                  if (!nodeId || !validLabel(nodeLabel)) return { ...r, ...enrichment };
 
-                const [connRes, clusterRes, procRes] = await Promise.all([
-                  executePrepared(
-                    `
+                  const [connRes, clusterRes, procRes] = await Promise.all([
+                    executePrepared(
+                      `
                   MATCH (n:${nodeLabel} {id: $nid})
                   OPTIONAL MATCH (n)-[r1:CodeRelation]->(dst)
                   OPTIONAL MATCH (src)-[r2:CodeRelation]->(n)
@@ -1127,61 +1133,63 @@ export const createServer = async (port: number, host: string = '127.0.0.1') => 
                     collect(DISTINCT {name: src.name, type: r2.type, confidence: r2.confidence}) AS incoming
                   LIMIT 1
                 `,
-                    { nid: nodeId },
-                  ).catch(() => []),
-                  executePrepared(
-                    `
+                      { nid: nodeId },
+                    ).catch(() => []),
+                    executePrepared(
+                      `
                   MATCH (n:${nodeLabel} {id: $nid})
                   MATCH (n)-[:CodeRelation {type: 'MEMBER_OF'}]->(c:Community)
                   RETURN c.label AS label, c.description AS description
                   LIMIT 1
                 `,
-                    { nid: nodeId },
-                  ).catch(() => []),
-                  executePrepared(
-                    `
+                      { nid: nodeId },
+                    ).catch(() => []),
+                    executePrepared(
+                      `
                   MATCH (n:${nodeLabel} {id: $nid})
                   MATCH (n)-[rel:CodeRelation {type: 'STEP_IN_PROCESS'}]->(p:Process)
                   RETURN p.id AS id, p.label AS label, rel.step AS step, p.stepCount AS stepCount
                   ORDER BY rel.step
                 `,
-                    { nid: nodeId },
-                  ).catch(() => []),
-                ]);
+                      { nid: nodeId },
+                    ).catch(() => []),
+                  ]);
 
-                if (connRes.length > 0) {
-                  const row = connRes[0];
-                  const outgoing = (Array.isArray(row) ? row[0] : row.outgoing || [])
-                    .filter((c: any) => c?.name)
-                    .slice(0, 5);
-                  const incoming = (Array.isArray(row) ? row[1] : row.incoming || [])
-                    .filter((c: any) => c?.name)
-                    .slice(0, 5);
-                  enrichment.connections = { outgoing, incoming };
-                }
+                  if (connRes.length > 0) {
+                    const row = connRes[0];
+                    const outgoing = (Array.isArray(row) ? row[0] : row.outgoing || [])
+                      .filter((c: any) => c?.name)
+                      .slice(0, 5);
+                    const incoming = (Array.isArray(row) ? row[1] : row.incoming || [])
+                      .filter((c: any) => c?.name)
+                      .slice(0, 5);
+                    enrichment.connections = { outgoing, incoming };
+                  }
 
-                if (clusterRes.length > 0) {
-                  const row = clusterRes[0];
-                  enrichment.cluster = Array.isArray(row) ? row[0] : row.label;
-                }
+                  if (clusterRes.length > 0) {
+                    const row = clusterRes[0];
+                    enrichment.cluster = Array.isArray(row) ? row[0] : row.label;
+                  }
 
-                if (procRes.length > 0) {
-                  enrichment.processes = procRes
-                    .map((row: any) => ({
-                      id: Array.isArray(row) ? row[0] : row.id,
-                      label: Array.isArray(row) ? row[1] : row.label,
-                      step: Array.isArray(row) ? row[2] : row.step,
-                      stepCount: Array.isArray(row) ? row[3] : row.stepCount,
-                    }))
-                    .filter((p: any) => p.id && p.label);
-                }
+                  if (procRes.length > 0) {
+                    enrichment.processes = procRes
+                      .map((row: any) => ({
+                        id: Array.isArray(row) ? row[0] : row.id,
+                        label: Array.isArray(row) ? row[1] : row.label,
+                        step: Array.isArray(row) ? row[2] : row.step,
+                        stepCount: Array.isArray(row) ? row[3] : row.stepCount,
+                      }))
+                      .filter((p: any) => p.id && p.label);
+                  }
 
-                return { ...r, ...enrichment };
-              }),
-            );
+                  return { ...r, ...enrichment };
+                }),
+              );
 
-            return { searchResults: enriched, ftsAvailable };
-          });
+              return { searchResults: enriched, ftsAvailable };
+            },
+            { readOnly: true },
+          );
           const response: any = { results: results.searchResults ?? results };
           if (results.ftsAvailable === false) {
             response.warning =
@@ -1251,8 +1259,13 @@ export const createServer = async (port: number, host: string = '127.0.0.1') => 
           const repoRoot = path.resolve(entry.path);
 
           const lbugPath = path.join(entry.storagePath, 'lbug');
-          const fileRows = await withLbugDb(lbugPath, () =>
-            executeQuery(`MATCH (n:File) WHERE n.content IS NOT NULL RETURN n.filePath AS filePath`),
+          const fileRows = await withLbugDb(
+            lbugPath,
+            () =>
+              executeQuery(
+                `MATCH (n:File) WHERE n.content IS NOT NULL RETURN n.filePath AS filePath`,
+              ),
+            { readOnly: true },
           );
 
           for (const row of fileRows) {
@@ -1293,7 +1306,9 @@ export const createServer = async (port: number, host: string = '127.0.0.1') => 
           const result = await backend.queryProcesses(requestedRepo(req));
           res.json(result);
         } catch (err: any) {
-          res.status(statusFromError(err)).json({ error: err.message || 'Failed to query processes' });
+          res
+            .status(statusFromError(err))
+            .json({ error: err.message || 'Failed to query processes' });
         }
       },
     },
@@ -1329,7 +1344,9 @@ export const createServer = async (port: number, host: string = '127.0.0.1') => 
           const result = await backend.queryClusters(requestedRepo(req));
           res.json(result);
         } catch (err: any) {
-          res.status(statusFromError(err)).json({ error: err.message || 'Failed to query clusters' });
+          res
+            .status(statusFromError(err))
+            .json({ error: err.message || 'Failed to query clusters' });
         }
       },
     },
@@ -1443,7 +1460,11 @@ export const createServer = async (port: number, host: string = '127.0.0.1') => 
 
               const forkWorker = () => {
                 const currentJob = jobManager.getJob(job.id);
-                if (!currentJob || currentJob.status === 'complete' || currentJob.status === 'failed')
+                if (
+                  !currentJob ||
+                  currentJob.status === 'complete' ||
+                  currentJob.status === 'failed'
+                )
                   return;
 
                 const child = fork(workerPath, [], {
@@ -1623,7 +1644,11 @@ export const createServer = async (port: number, host: string = '127.0.0.1') => 
           embedJobManager.updateJob(job.id, {
             repoName: entry.name,
             status: 'analyzing' as any,
-            progress: { phase: 'analyzing', percent: 0, message: 'Starting embedding generation...' },
+            progress: {
+              phase: 'analyzing',
+              percent: 0,
+              message: 'Starting embedding generation...',
+            },
           });
 
           const EMBED_TIMEOUT_MS = 30 * 60 * 1000;
@@ -1644,7 +1669,8 @@ export const createServer = async (port: number, host: string = '127.0.0.1') => 
               await withLbugDb(lbugPath, async () => {
                 const { runEmbeddingPipeline } =
                   await import('../core/embeddings/embedding-pipeline.js');
-                const { fetchExistingEmbeddingHashes } = await import('../core/lbug/lbug-adapter.js');
+                const { fetchExistingEmbeddingHashes } =
+                  await import('../core/lbug/lbug-adapter.js');
                 const existingEmbeddings = await fetchExistingEmbeddingHashes(executeQuery);
                 if (existingEmbeddings && existingEmbeddings.size > 0) {
                   console.log(
@@ -1658,7 +1684,11 @@ export const createServer = async (port: number, host: string = '127.0.0.1') => 
                     embedJobManager.updateJob(job.id, {
                       progress: {
                         phase:
-                          p.phase === 'ready' ? 'complete' : p.phase === 'error' ? 'failed' : p.phase,
+                          p.phase === 'ready'
+                            ? 'complete'
+                            : p.phase === 'error'
+                              ? 'failed'
+                              : p.phase,
                         percent: p.percent,
                         message:
                           p.phase === 'loading-model'

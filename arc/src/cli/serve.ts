@@ -28,7 +28,7 @@ export const serveCommand = async (options?: { port?: string; host?: string }) =
   const port = Number(options?.port ?? 4747);
   // Default to 'localhost' so the OS decides whether to bind to 127.0.0.1 or
   // ::1 based on system configuration, avoiding spurious CORS errors when the
-  // hosted frontend at arc.vercel.app connects to localhost.
+  // hosted frontend at arceus-arc.vercel.app connects to localhost.
   const host = options?.host ?? 'localhost';
 
   try {

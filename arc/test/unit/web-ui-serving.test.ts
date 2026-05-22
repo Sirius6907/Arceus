@@ -85,7 +85,7 @@ describe('landingPageHtml', () => {
   });
 
   it('contains the Vercel link with safe external attributes', () => {
-    expect(html).toContain('https://arc.vercel.app');
+    expect(html).toContain('https://arceus-arc.vercel.app');
     expect(html).toContain('target="_blank"');
     expect(html).toContain('rel="noopener noreferrer"');
   });

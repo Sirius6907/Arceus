@@ -24,6 +24,7 @@ import {
   openLbugConnection,
   waitForWindowsHandleRelease,
   type LbugConnectionHandle,
+  type LbugDatabaseOptions,
 } from './lbug-config.js';
 import { isVectorExtensionSupportedByPlatform } from '../platform/capabilities.js';
 
@@ -289,12 +290,16 @@ export const initLbug = async (dbPath: string) => {
  * database is busy (e.g. `arc analyze` holds the write lock).
  * Each retry waits DB_LOCK_RETRY_DELAY_MS * attempt milliseconds.
  */
-export const withLbugDb = async <T>(dbPath: string, operation: () => Promise<T>): Promise<T> => {
+export const withLbugDb = async <T>(
+  dbPath: string,
+  operation: () => Promise<T>,
+  options?: LbugDatabaseOptions,
+): Promise<T> => {
   let lastError: unknown;
   for (let attempt = 1; attempt <= DB_LOCK_RETRY_ATTEMPTS; attempt++) {
     try {
       return await runWithSessionLock(async () => {
-        await ensureLbugInitialized(dbPath);
+        await ensureLbugInitialized(dbPath, options);
         return operation();
       });
     } catch (err) {
@@ -324,15 +329,15 @@ export const withLbugDb = async <T>(dbPath: string, operation: () => Promise<T>)
   throw lastError;
 };
 
-const ensureLbugInitialized = async (dbPath: string) => {
+const ensureLbugInitialized = async (dbPath: string, options?: LbugDatabaseOptions) => {
   if (conn && currentDbPath === dbPath) {
     return { db, conn };
   }
-  await doInitLbug(dbPath);
+  await doInitLbug(dbPath, options);
   return { db, conn };
 };
 
-const doInitLbug = async (dbPath: string) => {
+const doInitLbug = async (dbPath: string, options?: LbugDatabaseOptions) => {
   // Different database requested — close the old one first
   if (conn || db) {
     await safeClose();
@@ -372,7 +377,7 @@ const doInitLbug = async (dbPath: string) => {
   const parentDir = path.dirname(dbPath);
   await fs.mkdir(parentDir, { recursive: true });
 
-  const opened = await openLbugConnection(lbug, dbPath);
+  const opened = await openLbugConnection(lbug, dbPath, options);
   db = opened.db;
   conn = opened.conn;
 
