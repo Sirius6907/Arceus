@@ -98,6 +98,7 @@ Commands:
   analyze [path]                   Index a repository (full analysis)
   index [path...]                 Register an existing .arc/ folder into the global registry
   serve                            Start local HTTP server for web UI connection
+  stop                             Stop the local HTTP server on a port (default: 4747)
   mcp                              Start MCP server (stdio) — serves all indexed repos
   list                             List all indexed repositories
   status                           Show index status for current repo
@@ -174,6 +175,14 @@ Start local HTTP server for web UI connection
 Options:
   -p, --port <port>     Port number (default: 4747)
   --host <host>         Bind address (default: 127.0.0.1)`);
+      break;
+    case 'stop':
+      console.log(`Usage: ${binName} stop [options]
+
+Stop the local HTTP server on a port
+
+Options:
+  -p, --port <port>     Port number (default: 4747)`);
       break;
     case 'clean':
       console.log(`Usage: ${binName} clean [options]
@@ -377,6 +386,12 @@ async function runCLI() {
       if (options.port === undefined) options.port = '4747';
       const { serveCommand } = await import('./serve.js');
       await serveCommand(options);
+      break;
+    }
+    case 'stop': {
+      if (options.port === undefined) options.port = '4747';
+      const { stopCommand } = await import('./stop.js');
+      await stopCommand(options);
       break;
     }
     case 'mcp': {

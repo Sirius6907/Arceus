@@ -76,4 +76,13 @@ describe('CLI help surface', () => {
     expect(result.stdout).toContain('understand-quickly');
     expect(result.stdout).toContain('UNDERSTAND_QUICKLY_TOKEN');
   });
+
+  it('stop help shows port options', () => {
+    const result = runHelp('stop');
+
+    expect(result.status).toBe(0);
+    expect(result.stdout).toContain('stop [options]');
+    expect(result.stdout).toContain('Stop the local HTTP server');
+    expect(result.stdout).toContain('-p, --port <port>');
+  });
 });
