@@ -412,6 +412,8 @@ Arceus also has a browser-based UI at [arceus-arc.vercel.app](https://arceus-arc
 
 ## License
 
+Copyright (c) 2026 Chandan Kumar Behera
+
 [PolyForm Noncommercial 1.0.0](https://polyformproject.org/licenses/noncommercial/1.0.0/)
 
 Free for non-commercial use. Contact for commercial licensing.

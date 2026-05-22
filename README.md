@@ -419,3 +419,11 @@ cosign verify ghcr.io/Sirius6907/arc:latest \
 - [transformers.js](https://huggingface.co/docs/transformers.js) — Browser ML
 - [Graphology](https://graphology.github.io/) — Graph data structures
 - [MCP](https://modelcontextprotocol.io/) — Model Context Protocol
+
+---
+
+## License
+
+Copyright (c) 2026 Chandan Kumar Behera
+
+Licensed under the Apache License, Version 2.0. See [LICENSE](LICENSE) for details.
