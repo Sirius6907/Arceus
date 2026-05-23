@@ -391,8 +391,8 @@ export const SettingsPanel = ({
                   className="w-full rounded-xl border border-border-subtle bg-elevated px-4 py-3 font-mono text-sm text-text-primary transition-all outline-none placeholder:text-text-muted focus:border-accent focus:ring-2 focus:ring-accent/20"
                 />
                 <p className="text-xs text-text-muted">
-                  Run <code className="rounded bg-elevated px-1 py-0.5">arc serve</code> to
-                  start the local server
+                  Run <code className="rounded bg-elevated px-1 py-0.5">arc serve</code> to start
+                  the local server
                 </p>
               </div>
             </div>
@@ -687,11 +687,38 @@ export const SettingsPanel = ({
                   >
                     ollama.ai
                   </a>
-                  , then run:
+                  .
                 </p>
-                <code className="mt-2 block rounded-lg bg-black/30 px-3 py-2 font-mono text-sm text-amber-200">
-                  ollama serve
-                </code>
+                <p className="mt-2 text-xs leading-relaxed text-amber-300">
+                  ⚠️{' '}
+                  <span className="font-medium text-amber-200">CORS Configuration Required:</span>{' '}
+                  Because this Web UI runs on a hosted domain (
+                  <code className="rounded bg-black/30 px-1">arceus-arc.vercel.app</code>), you must
+                  allow browser requests by setting the{' '}
+                  <code className="rounded bg-black/30 px-1">OLLAMA_ORIGINS</code> environment
+                  variable before launching:
+                </p>
+                <div className="mt-2 space-y-1 font-mono text-xs text-amber-200">
+                  <div className="rounded bg-black/30 p-1">
+                    <span className="text-text-muted"># Windows (cmd):</span>
+                    <br />
+                    set OLLAMA_ORIGINS=*
+                    <br />
+                    ollama serve
+                  </div>
+                  <div className="rounded bg-black/30 p-1">
+                    <span className="text-text-muted"># Windows (PowerShell):</span>
+                    <br />
+                    $env:OLLAMA_ORIGINS="*"
+                    <br />
+                    ollama serve
+                  </div>
+                  <div className="rounded bg-black/30 p-1">
+                    <span className="text-text-muted"># macOS / Linux:</span>
+                    <br />
+                    OLLAMA_ORIGINS="*" ollama serve
+                  </div>
+                </div>
               </div>
 
               <div className="space-y-2">

@@ -275,6 +275,31 @@ async function openReadOnlyDatabase(dbPath: string): Promise<lbug.Database> {
     return db;
   } catch (err) {
     if (db) await db.close().catch(() => {});
+
+    const msg = err instanceof Error ? err.message : String(err);
+    if (msg.includes('replay shadow pages')) {
+      try {
+        // Open in read-write mode briefly to replay shadow pages and auto-checkpoint the WAL
+        const tempDb = createLbugDatabase(lbug, dbPath, {
+          readOnly: false,
+          throwOnWalReplayFailure: false,
+        });
+        await tempDb.init();
+        await tempDb.close().catch(() => {});
+
+        // Re-try opening in read-only mode
+        db = createLbugDatabase(lbug, dbPath, {
+          readOnly: true,
+          throwOnWalReplayFailure: false,
+        });
+        await db.init();
+        return db;
+      } catch (retryErr) {
+        if (db) await db.close().catch(() => {});
+        throw retryErr;
+      }
+    }
+
     throw err;
   } finally {
     restoreStdout();

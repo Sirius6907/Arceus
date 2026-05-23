@@ -274,9 +274,35 @@ export async function openLbugConnection(
       () => createLbugDatabase(lbugModule, databasePath, options),
       databasePath,
     );
+    await db.init();
     return { db, conn: new lbugModule.Connection(db) };
-  } catch (err) {
+  } catch (err: any) {
     if (db) await db.close().catch(() => {});
+
+    const msg = err instanceof Error ? err.message : String(err);
+    if (msg.includes('replay shadow pages')) {
+      try {
+        // Open in read-write mode briefly to replay shadow pages and auto-checkpoint the WAL
+        const tempDb = await openWithLockRetry(
+          () => createLbugDatabase(lbugModule, databasePath, { ...options, readOnly: false }),
+          databasePath,
+        );
+        await tempDb.init();
+        await tempDb.close().catch(() => {});
+
+        // Re-try opening in read-only mode
+        db = await openWithLockRetry(
+          () => createLbugDatabase(lbugModule, databasePath, options),
+          databasePath,
+        );
+        await db.init();
+        return { db, conn: new lbugModule.Connection(db) };
+      } catch (retryErr) {
+        if (db) await db.close().catch(() => {});
+        throw retryErr;
+      }
+    }
+
     throw err;
   }
 }
