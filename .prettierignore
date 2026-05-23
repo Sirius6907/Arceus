@@ -15,3 +15,8 @@ arceus-web/test-results/
 .swarm/
 assets/
 repomix-output*
+.akg/
+**/node_modules/
+**/.venv/
+**/venv/
+**/.history/

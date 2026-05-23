@@ -184,8 +184,8 @@ function TabContent({
             <br />
             <strong style={{ color: '#e2e2e8', fontWeight: 500 }}>2.</strong> Search by name or type
             <br />
-            <strong style={{ color: '#e2e2e8', fontWeight: 500 }}>3.</strong> Ask Arceus Ai a natural
-            language question
+            <strong style={{ color: '#e2e2e8', fontWeight: 500 }}>3.</strong> Ask Arceus Ai a
+            natural language question
           </p>
         </div>
 
@@ -370,8 +370,8 @@ function TabContent({
             ✓ Semantic Ready
           </p>
           <p style={{ fontSize: 12, color: '#9ca3af', margin: 0, lineHeight: 1.6 }}>
-            Your repo is indexed and ready for semantic queries. Arceus Ai understands code structure
-            and relationships, not just file names.
+            Your repo is indexed and ready for semantic queries. Arceus Ai understands code
+            structure and relationships, not just file names.
           </p>
         </div>
 

@@ -195,9 +195,7 @@ export const analyzeCommand = async (inputPath?: string, options?: AnalyzeOption
       process.exitCode = 1;
       return;
     }
-    process.env.ARC_WORKER_SUB_BATCH_TIMEOUT_MS = String(
-      Math.round(workerTimeoutSeconds * 1000),
-    );
+    process.env.ARC_WORKER_SUB_BATCH_TIMEOUT_MS = String(Math.round(workerTimeoutSeconds * 1000));
   }
 
   // Parse `--embeddings [limit]`: `true` → default cap, string → numeric cap
@@ -236,11 +234,7 @@ export const analyzeCommand = async (inputPath?: string, options?: AnalyzeOption
   };
 
   if (
-    !setPositiveEnv(
-      '--embedding-threads',
-      'ARC_EMBEDDING_THREADS',
-      options?.embeddingThreads,
-    ) ||
+    !setPositiveEnv('--embedding-threads', 'ARC_EMBEDDING_THREADS', options?.embeddingThreads) ||
     !setPositiveEnv(
       '--embedding-batch-size',
       'ARC_EMBEDDING_BATCH_SIZE',
@@ -339,9 +333,7 @@ export const analyzeCommand = async (inputPath?: string, options?: AnalyzeOption
   // Note: --skills is handled after runFullAnalysis using the returned pipelineResult.
 
   if (process.env.ARC_NO_GITIGNORE) {
-    console.log(
-      '  ARC_NO_GITIGNORE is set — skipping .gitignore (still reading .arcignore)\n',
-    );
+    console.log('  ARC_NO_GITIGNORE is set — skipping .gitignore (still reading .arcignore)\n');
   }
 
   const maxFileSizeBanner = getMaxFileSizeBannerMessage();
@@ -391,9 +383,9 @@ export const analyzeCommand = async (inputPath?: string, options?: AnalyzeOption
   // overwrite the bar mid-render. We capture originals, swap to barLog for
   // the lifetime of the run, and restore on completion/error/SIGINT.
   const origLog = console.log.bind(console);
-  // eslint-disable-next-line no-console -- intentional console-routing for progress bar UX
+
   const origWarn = console.warn.bind(console);
-  // eslint-disable-next-line no-console -- intentional console-routing for progress bar UX
+
   const origError = console.error.bind(console);
   let barCurrentValue = 0;
   const barLog = (...args: any[]) => {
@@ -402,9 +394,9 @@ export const analyzeCommand = async (inputPath?: string, options?: AnalyzeOption
     bar.update(barCurrentValue);
   };
   console.log = barLog;
-  // eslint-disable-next-line no-console -- intentional console-routing for progress bar UX
+
   console.warn = barLog;
-  // eslint-disable-next-line no-console -- intentional console-routing for progress bar UX
+
   console.error = barLog;
 
   // Track elapsed time per phase
@@ -474,9 +466,9 @@ export const analyzeCommand = async (inputPath?: string, options?: AnalyzeOption
       clearInterval(elapsedTimer);
       process.removeListener('SIGINT', sigintHandler);
       console.log = origLog;
-      // eslint-disable-next-line no-console -- restoring after intentional progress-bar routing
+
       console.warn = origWarn;
-      // eslint-disable-next-line no-console -- restoring after intentional progress-bar routing
+
       console.error = origError;
       bar.stop();
       console.log('  Already up to date\n');
@@ -551,9 +543,9 @@ export const analyzeCommand = async (inputPath?: string, options?: AnalyzeOption
     process.removeListener('SIGINT', sigintHandler);
 
     console.log = origLog;
-    // eslint-disable-next-line no-console -- restoring after intentional progress-bar routing
+
     console.warn = origWarn;
-    // eslint-disable-next-line no-console -- restoring after intentional progress-bar routing
+
     console.error = origError;
 
     bar.update(100, { phase: 'Done' });
@@ -578,9 +570,9 @@ export const analyzeCommand = async (inputPath?: string, options?: AnalyzeOption
     clearInterval(elapsedTimer);
     process.removeListener('SIGINT', sigintHandler);
     console.log = origLog;
-    // eslint-disable-next-line no-console -- restoring after intentional progress-bar routing
+
     console.warn = origWarn;
-    // eslint-disable-next-line no-console -- restoring after intentional progress-bar routing
+
     console.error = origError;
     bar.stop();
 

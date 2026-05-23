@@ -39,6 +39,7 @@ const makeStubLbug = (control: StubModuleControl) => {
       const next = control.databaseThrows.shift();
       if (next instanceof Error) throw next;
     }
+    async init(): Promise<void> {}
     async close(): Promise<void> {
       control.closeCallCount++;
     }

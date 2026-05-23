@@ -251,9 +251,7 @@ export class ExtensionManager {
     const key = `${name}:${reason}`;
     if (this.warnedKeys.has(key)) return;
     this.warnedKeys.add(key);
-    warn(
-      `Arceus: ${label} extension unavailable; continuing without ${label} features. ${reason}`,
-    );
+    warn(`Arceus: ${label} extension unavailable; continuing without ${label} features. ${reason}`);
   }
 }
 

@@ -158,9 +158,7 @@ describe('generateAIContextFiles', () => {
       );
 
       expect(result.files).toContain('.claude/skills/arc/ (skipped via --skip-skills)');
-      await expect(
-        fs.access(path.join(skipDir, '.claude', 'skills', 'arc')),
-      ).rejects.toThrow();
+      await expect(fs.access(path.join(skipDir, '.claude', 'skills', 'arc'))).rejects.toThrow();
     } finally {
       await fs.rm(skipDir, { recursive: true, force: true });
     }

@@ -62,9 +62,7 @@ async function waitForGraphLoaded(page: import('@playwright/test').Page) {
   await page.goto('/');
 
   const landingCards = page.locator('[data-testid="landing-repo-card"]');
-  const preferredLandingCard = landingCards
-    .filter({ hasText: /Arceus|local-integration/ })
-    .first();
+  const preferredLandingCard = landingCards.filter({ hasText: /Arceus|local-integration/ }).first();
   try {
     await landingCards.first().waitFor({ state: 'visible', timeout: 15_000 });
     const landingCard =

@@ -793,12 +793,7 @@ describe('CLI end-to-end', () => {
           [repoBad, 'bad-alias'],
           [repoGood, 'good-alias'],
         ] as const) {
-          const r = runCliWithEnv(
-            ['analyze', '--name', alias],
-            repo,
-            { ARC_HOME: gnHome },
-            60000,
-          );
+          const r = runCliWithEnv(['analyze', '--name', alias], repo, { ARC_HOME: gnHome }, 60000);
           if (r.status === null) return;
           expect(r.status, `analyze ${alias} exited ${r.status}: ${r.stdout}${r.stderr}`).toBe(0);
         }
@@ -850,10 +845,9 @@ describe('CLI end-to-end', () => {
         // Good repo: its .arc IS gone (cleanup succeeded despite
         // the poisoned sibling entry — per-entry error tolerance is
         // preserved).
-        expect(
-          fs.existsSync(path.join(repoGood, '.arc')),
-          'good repo .arc should be cleaned',
-        ).toBe(false);
+        expect(fs.existsSync(path.join(repoGood, '.arc')), 'good repo .arc should be cleaned').toBe(
+          false,
+        );
         // But the good repo's working tree stays (clean never touches
         // anything outside .arc).
         expect(fs.existsSync(repoGood), 'good repo working tree must survive').toBe(true);

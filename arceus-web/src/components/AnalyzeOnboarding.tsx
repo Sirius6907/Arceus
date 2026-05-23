@@ -50,8 +50,8 @@ export const AnalyzeOnboarding = ({ onComplete }: AnalyzeOnboardingProps) => {
             Analyze your first repository
           </h2>
           <p className="mx-auto mt-1.5 max-w-xs text-sm leading-relaxed text-text-secondary">
-            Paste a GitHub URL and Arceus will clone it, parse the code, and build a live
-            knowledge graph — right in your browser.
+            Paste a GitHub URL and Arceus will clone it, parse the code, and build a live knowledge
+            graph — right in your browser.
           </p>
         </div>
       </div>

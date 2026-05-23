@@ -73,8 +73,7 @@ function findSectionMarkerIndex(content: string, marker: string, startFrom = 0):
  * - Self-review checklist — forces model to verify its own work
  */
 async function findGroupsContainingRegistryName(registryName: string): Promise<string[]> {
-  const { listGroups, getDefaultArceusDir, getGroupDir } =
-    await import('../core/group/storage.js');
+  const { listGroups, getDefaultArceusDir, getGroupDir } = await import('../core/group/storage.js');
   const { loadGroupConfig } = await import('../core/group/config-parser.js');
   const names = await listGroups();
   const hits: string[] = [];

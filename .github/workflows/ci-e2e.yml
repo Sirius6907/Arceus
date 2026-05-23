@@ -34,7 +34,7 @@ jobs:
       - name: Configure e2e Arceus home
         run: echo "ARC_HOME=${RUNNER_TEMP}/arc-home" >> "$GITHUB_ENV"
 
-      - uses: ./.github/actions/setup-arceus-web
+      - uses: ./.github/actions/setup-arc-web
 
       - name: Install Playwright browsers
         run: npx playwright install --with-deps chromium

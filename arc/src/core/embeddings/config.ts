@@ -47,8 +47,6 @@ export const resolveEmbeddingConfig = (
       overrides.threads ?? defaultEmbeddingThreads(),
     ),
     device:
-      parseDevice(env.ARC_EMBEDDING_DEVICE) ??
-      overrides.device ??
-      DEFAULT_EMBEDDING_CONFIG.device,
+      parseDevice(env.ARC_EMBEDDING_DEVICE) ?? overrides.device ?? DEFAULT_EMBEDDING_CONFIG.device,
   };
 };

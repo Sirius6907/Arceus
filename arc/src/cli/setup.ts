@@ -257,9 +257,7 @@ function hasArceusHook(hooksObj: any, eventName: string): boolean {
   return entries.some(
     (h: any) =>
       Array.isArray(h.hooks) &&
-      h.hooks.some(
-        (hh: any) => typeof hh.command === 'string' && hh.command.includes('arc-hook'),
-      ),
+      h.hooks.some((hh: any) => typeof hh.command === 'string' && hh.command.includes('arc-hook')),
   );
 }
 

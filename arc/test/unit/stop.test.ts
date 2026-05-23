@@ -30,7 +30,9 @@ describe('stopCommand', () => {
     const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
     await stopCommand({ port: 'invalid' });
     expect(process.exitCode).toBe(1);
-    expect(consoleErrorSpy).toHaveBeenCalledWith(expect.stringContaining('Error: Invalid port number'));
+    expect(consoleErrorSpy).toHaveBeenCalledWith(
+      expect.stringContaining('Error: Invalid port number'),
+    );
     consoleErrorSpy.mockRestore();
   });
 
@@ -60,7 +62,9 @@ describe('stopCommand', () => {
 
     expect(execMock).toHaveBeenCalledWith('netstat -ano', expect.any(Function));
     expect(execMock).toHaveBeenCalledWith('taskkill /F /PID 9876', expect.any(Function));
-    expect(consoleLogSpy).toHaveBeenCalledWith(expect.stringContaining('Successfully stopped process(es) on port 4747 (PID: 9876)'));
+    expect(consoleLogSpy).toHaveBeenCalledWith(
+      expect.stringContaining('Successfully stopped process(es) on port 4747 (PID: 9876)'),
+    );
 
     consoleLogSpy.mockRestore();
     execMock.mockRestore();
@@ -81,7 +85,9 @@ describe('stopCommand', () => {
     const consoleLogSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
     await stopCommand({ port: '4747' });
 
-    expect(consoleLogSpy).toHaveBeenCalledWith(expect.stringContaining('No active process found using port 4747'));
+    expect(consoleLogSpy).toHaveBeenCalledWith(
+      expect.stringContaining('No active process found using port 4747'),
+    );
 
     consoleLogSpy.mockRestore();
     execMock.mockRestore();
@@ -106,7 +112,9 @@ describe('stopCommand', () => {
 
     expect(execMock).toHaveBeenCalledWith('lsof -t -i :4747', expect.any(Function));
     expect(execMock).toHaveBeenCalledWith('kill -9 12345', expect.any(Function));
-    expect(consoleLogSpy).toHaveBeenCalledWith(expect.stringContaining('Successfully stopped process(es) on port 4747 (PID: 12345)'));
+    expect(consoleLogSpy).toHaveBeenCalledWith(
+      expect.stringContaining('Successfully stopped process(es) on port 4747 (PID: 12345)'),
+    );
 
     consoleLogSpy.mockRestore();
     execMock.mockRestore();

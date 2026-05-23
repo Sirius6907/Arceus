@@ -219,9 +219,7 @@ function main() {
       // diagnosing why augmentation isn't firing. Stderr only — stdout is
       // reserved for the JSON response Cursor consumes.
       try {
-        process.stderr.write(
-          `Arceus Cursor hook stdin: ${JSON.stringify(input).slice(0, 500)}\n`,
-        );
+        process.stderr.write(`Arceus Cursor hook stdin: ${JSON.stringify(input).slice(0, 500)}\n`);
       } catch {
         /* never let debug logging break the hook */
       }

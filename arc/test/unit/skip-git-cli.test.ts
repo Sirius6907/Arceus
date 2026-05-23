@@ -262,9 +262,9 @@ describe('--skip-git CLI flag', () => {
           env: testEnv(),
         });
 
-        expect(
-          fs.readFileSync(path.join(parentDir, 'COOLIO', '.arc', '.gitignore'), 'utf8'),
-        ).toBe('*\n');
+        expect(fs.readFileSync(path.join(parentDir, 'COOLIO', '.arc', '.gitignore'), 'utf8')).toBe(
+          '*\n',
+        );
         const status = execSync('git status --short', {
           cwd: parentDir,
           encoding: 'utf8',

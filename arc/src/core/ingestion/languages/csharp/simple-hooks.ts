@@ -5,14 +5,7 @@
  * so reviewers don't have to re-derive the analysis.
  */
 
-import type {
-  CaptureMatch,
-  ParsedImport,
-  Scope,
-  ScopeId,
-  ScopeTree,
-  TypeRef,
-} from 'arceus-shared';
+import type { CaptureMatch, ParsedImport, Scope, ScopeId, ScopeTree, TypeRef } from 'arceus-shared';
 
 // ─── bindingScopeFor ──────────────────────────────────────────────────────
 

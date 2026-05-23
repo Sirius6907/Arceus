@@ -1,11 +1,4 @@
-import type {
-  CaptureMatch,
-  ParsedImport,
-  Scope,
-  ScopeId,
-  ScopeTree,
-  TypeRef,
-} from 'arceus-shared';
+import type { CaptureMatch, ParsedImport, Scope, ScopeId, ScopeTree, TypeRef } from 'arceus-shared';
 
 /**
  * C binding scope: always use default auto-hoist (null).

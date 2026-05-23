@@ -79,9 +79,7 @@ describe('indexCommand', () => {
 
     expect(mockRegisterRepo).not.toHaveBeenCalled();
     expect(process.exitCode).toBe(1);
-    expect(logSpy).toHaveBeenCalledWith(
-      `  No .arc/ folder found at: ${resolvedRepo}/.arc`,
-    );
+    expect(logSpy).toHaveBeenCalledWith(`  No .arc/ folder found at: ${resolvedRepo}/.arc`);
   });
 
   it('fails when lbug database does not exist', async () => {
@@ -93,9 +91,7 @@ describe('indexCommand', () => {
 
     expect(mockRegisterRepo).not.toHaveBeenCalled();
     expect(process.exitCode).toBe(1);
-    expect(logSpy).toHaveBeenCalledWith(
-      '  .arc/ folder exists but contains no LadybugDB index.',
-    );
+    expect(logSpy).toHaveBeenCalledWith('  .arc/ folder exists but contains no LadybugDB index.');
   });
 
   it('fails when meta.json is missing and --force is not set', async () => {

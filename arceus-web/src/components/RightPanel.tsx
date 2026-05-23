@@ -218,10 +218,11 @@ export const RightPanel = () => {
           {/* Chat Tab */}
           <button
             onClick={() => setActiveTab('chat')}
-            className={`flex items-center gap-1.5 rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${activeTab === 'chat'
+            className={`flex items-center gap-1.5 rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${
+              activeTab === 'chat'
                 ? 'bg-accent/15 text-accent'
                 : 'text-text-muted hover:bg-hover hover:text-text-primary'
-              }`}
+            }`}
           >
             <Sparkles className="h-3.5 w-3.5" />
             <span>Arceus Ai</span>
@@ -230,10 +231,11 @@ export const RightPanel = () => {
           {/* Processes Tab */}
           <button
             onClick={() => setActiveTab('processes')}
-            className={`flex items-center gap-1.5 rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${activeTab === 'processes'
+            className={`flex items-center gap-1.5 rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${
+              activeTab === 'processes'
                 ? 'bg-accent/15 text-accent'
                 : 'text-text-muted hover:bg-hover hover:text-text-primary'
-              }`}
+            }`}
           >
             <GitBranch className="h-3.5 w-3.5" />
             <span>Processes</span>
@@ -288,7 +290,7 @@ export const RightPanel = () => {
           )}
 
           {/* Messages */}
-          <div ref={scrollContainerRef} className="scrollbar-thin flex-1 overflow-y-auto p-4">
+          <div ref={scrollContainerRef} className="flex-1 scrollbar-thin overflow-y-auto p-4">
             {chatMessages.length === 0 ? (
               <div className="flex h-full flex-col items-center justify-center px-4 text-center">
                 <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-xl bg-gradient-to-br from-accent to-node-interface text-2xl shadow-glow">
@@ -394,10 +396,11 @@ export const RightPanel = () => {
           <button
             aria-label="Scroll to bottom"
             onClick={() => scrollToBottom()}
-            className={`absolute bottom-20 left-1/2 z-10 -translate-x-1/2 rounded-full border border-border-subtle bg-elevated px-3 py-1.5 text-xs text-text-secondary shadow-lg transition-all duration-200 hover:border-accent hover:text-accent ${!isAtBottom && chatMessages.length > 0
+            className={`absolute bottom-20 left-1/2 z-10 -translate-x-1/2 rounded-full border border-border-subtle bg-elevated px-3 py-1.5 text-xs text-text-secondary shadow-lg transition-all duration-200 hover:border-accent hover:text-accent ${
+              !isAtBottom && chatMessages.length > 0
                 ? 'translate-y-0 opacity-100'
                 : 'pointer-events-none translate-y-2 opacity-0'
-              }`}
+            }`}
           >
             <ArrowDown className="mr-1 inline h-3.5 w-3.5" />
             Scroll to bottom
@@ -413,7 +416,7 @@ export const RightPanel = () => {
                 onKeyDown={handleKeyDown}
                 placeholder="Ask about the codebase..."
                 rows={1}
-                className="scrollbar-thin min-h-[36px] flex-1 resize-none border-none bg-transparent text-sm text-text-primary outline-none placeholder:text-text-muted"
+                className="min-h-[36px] flex-1 resize-none scrollbar-thin border-none bg-transparent text-sm text-text-primary outline-none placeholder:text-text-muted"
                 style={{ height: '36px', overflowY: 'hidden' }}
               />
               <button

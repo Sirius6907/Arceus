@@ -29,10 +29,7 @@ let tmpFile: string;
 beforeAll(async () => {
   // Real fs.readFile target so the route does the same kind of FS work
   // the production routes do — keeps the test honest about what it covers.
-  tmpFile = path.join(
-    await fs.mkdtemp(path.join(os.tmpdir(), 'arc-ratelimit-')),
-    'fixture.txt',
-  );
+  tmpFile = path.join(await fs.mkdtemp(path.join(os.tmpdir(), 'arc-ratelimit-')), 'fixture.txt');
   await fs.writeFile(tmpFile, 'hello\n', 'utf-8');
 });
 
@@ -229,23 +226,33 @@ describe('production routes — rate-limit middleware wiring', () => {
   });
 
   it('GET /api/file is wired with createRouteLimiter', () => {
-    expect(apiSource).toMatch(/path:\s*['"]\/api\/file['"],\s*middlewares:\s*\[\s*createRouteLimiter\(/);
+    expect(apiSource).toMatch(
+      /path:\s*['"]\/api\/file['"],\s*middlewares:\s*\[\s*createRouteLimiter\(/,
+    );
   });
 
   it('GET /api/grep is wired with createRouteLimiter', () => {
-    expect(apiSource).toMatch(/path:\s*['"]\/api\/grep['"],\s*middlewares:\s*\[\s*createRouteLimiter\(/);
+    expect(apiSource).toMatch(
+      /path:\s*['"]\/api\/grep['"],\s*middlewares:\s*\[\s*createRouteLimiter\(/,
+    );
   });
 
   it('DELETE /api/repo is wired with createRouteLimiter', () => {
-    expect(apiSource).toMatch(/path:\s*['"]\/api\/repo['"],\s*middlewares:\s*\[\s*createRouteLimiter\(/);
+    expect(apiSource).toMatch(
+      /path:\s*['"]\/api\/repo['"],\s*middlewares:\s*\[\s*createRouteLimiter\(/,
+    );
   });
 
   it('POST /api/analyze is wired with createRouteLimiter', () => {
-    expect(apiSource).toMatch(/path:\s*['"]\/api\/analyze['"],\s*middlewares:\s*\[\s*createRouteLimiter\(/);
+    expect(apiSource).toMatch(
+      /path:\s*['"]\/api\/analyze['"],\s*middlewares:\s*\[\s*createRouteLimiter\(/,
+    );
   });
 
   it('POST /api/embed is wired with createRouteLimiter', () => {
-    expect(apiSource).toMatch(/path:\s*['"]\/api\/embed['"],\s*middlewares:\s*\[\s*createRouteLimiter\(/);
+    expect(apiSource).toMatch(
+      /path:\s*['"]\/api\/embed['"],\s*middlewares:\s*\[\s*createRouteLimiter\(/,
+    );
   });
 
   it('SPA fallback is wired with createRouteLimiter', () => {

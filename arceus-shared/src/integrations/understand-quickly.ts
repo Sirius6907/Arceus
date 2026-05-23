@@ -27,7 +27,7 @@ export const UNDERSTAND_QUICKLY_DISPATCH_URL = [
   'repos',
   'looptech-ai',
   'understand-quickly',
-  'dispatches'
+  'dispatches',
 ].join('/');
 
 /**
@@ -203,4 +203,3 @@ export const parseOwnerRepoFromRemote = (url: string | null | undefined): string
 
   return null;
 };
-

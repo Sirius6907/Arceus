@@ -3,14 +3,7 @@
  * the provider's choice explicit rather than relying on defaults.
  */
 
-import type {
-  CaptureMatch,
-  ParsedImport,
-  Scope,
-  ScopeId,
-  ScopeTree,
-  TypeRef,
-} from 'arceus-shared';
+import type { CaptureMatch, ParsedImport, Scope, ScopeId, ScopeTree, TypeRef } from 'arceus-shared';
 
 // ─── bindingScopeFor ──────────────────────────────────────────────────────
 

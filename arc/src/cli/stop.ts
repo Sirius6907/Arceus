@@ -39,7 +39,9 @@ export const stopCommand = async (options?: { port?: string }) => {
     }
 
     if (killedPids.length > 0) {
-      console.log(`Successfully stopped process(es) on port ${port} (PID: ${killedPids.join(', ')}).`);
+      console.log(
+        `Successfully stopped process(es) on port ${port} (PID: ${killedPids.join(', ')}).`,
+      );
     }
     if (failedPids.length > 0) {
       console.error(`Failed to stop process(es) on port ${port} (PID: ${failedPids.join(', ')}).`);

@@ -347,9 +347,7 @@ describe('readResource', () => {
 
   it('throws for unknown resource URI', async () => {
     const backend = createMockBackend();
-    await expect(readResource('arc://unknown', backend)).rejects.toThrow(
-      'Unknown resource URI',
-    );
+    await expect(readResource('arc://unknown', backend)).rejects.toThrow('Unknown resource URI');
   });
 
   it('throws for unknown repo-scoped resource type', async () => {

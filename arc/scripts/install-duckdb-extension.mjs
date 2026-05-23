@@ -22,9 +22,7 @@ async function installDuckDbExtension(extensionName) {
   const require = createRequire(import.meta.url);
   const lbugModule = require('@ladybugdb/core');
   const lbug = lbugModule.default ?? lbugModule;
-  const lbugMaxDbSize = parseLbugMaxDbSize(
-    process.argv[3] ?? process.env.ARC_LBUG_MAX_DB_SIZE,
-  );
+  const lbugMaxDbSize = parseLbugMaxDbSize(process.argv[3] ?? process.env.ARC_LBUG_MAX_DB_SIZE);
 
   const tmpDir = await fs.mkdtemp(path.join(os.tmpdir(), 'arc-ext-install-'));
   const dbPath = path.join(tmpDir, 'install.lbug');

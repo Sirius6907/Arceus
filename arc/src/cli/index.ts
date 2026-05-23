@@ -329,11 +329,20 @@ async function runCLI() {
     !pkg.homepage?.includes(repoTarget) ||
     !pkg.repository?.url?.includes(repoTarget)
   ) {
-    console.error('\x1b[31m%s\x1b[0m', '----------------------------------------------------------------------');
+    console.error(
+      '\x1b[31m%s\x1b[0m',
+      '----------------------------------------------------------------------',
+    );
     console.error('\x1b[31m%s\x1b[0m', 'ERROR: Unauthorized rebranding detected.');
-    console.error('\x1b[31m%s\x1b[0m', `Arceus is licensed only under ownership of ${authorTarget}.`);
+    console.error(
+      '\x1b[31m%s\x1b[0m',
+      `Arceus is licensed only under ownership of ${authorTarget}.`,
+    );
     console.error('\x1b[31m%s\x1b[0m', `Original Repository: https://github.com/${repoTarget}`);
-    console.error('\x1b[31m%s\x1b[0m', '----------------------------------------------------------------------');
+    console.error(
+      '\x1b[31m%s\x1b[0m',
+      '----------------------------------------------------------------------',
+    );
     process.exit(1);
   }
 

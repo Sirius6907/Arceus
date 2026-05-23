@@ -61,6 +61,8 @@ export default [
       '**/*.d.ts',
       '.claude/**',
       '.history/**',
+      '**/.venv/**',
+      '**/venv/**',
     ],
   },
 
@@ -100,12 +102,19 @@ export default [
     },
   },
 
-  // CLI/server packages — `console.log` IS the contract (CLI tool data output
-  // on stdout, e.g. `arc query | jq`; server pretty-printed banners).
-  // Diagnostic logging (`warn`/`error`/`debug`/`info`) goes through pino like
-  // the rest of the codebase.
+  // CLI packages — `console.log` is for stdout (CLI tool output), while
+  // `console.error`/`console.warn` print standard diagnostics to stderr.
   {
-    files: ['arc/src/cli/**/*.ts', 'arc/src/server/**/*.ts'],
+    files: ['arc/src/cli/**/*.ts'],
+    rules: {
+      'no-console': ['error', { allow: ['log', 'warn', 'error'] }],
+    },
+  },
+
+  // Server packages — banner output goes to `console.log`, but all other
+  // diagnostic logging must go through pino.
+  {
+    files: ['arc/src/server/**/*.ts'],
     rules: {
       'no-console': ['error', { allow: ['log'] }],
     },

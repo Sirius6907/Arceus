@@ -16,13 +16,18 @@ const replacements = [
   { regex: /\.arceus/g, replacement: '.arc' },
   { regex: /ARCEUS_/g, replacement: 'ARC_' },
   { regex: /arceus_/g, replacement: 'arc_' },
-  { regex: /arceus/g, replacement: 'arc' }
+  { regex: /arceus/g, replacement: 'arc' },
 ];
 
 function processDirectory(dir) {
   const files = fs.readdirSync(dir);
   for (const file of files) {
-    if (file === 'node_modules' || file === '.git' || file === 'replace.js' || file === 'package-lock.json') {
+    if (
+      file === 'node_modules' ||
+      file === '.git' ||
+      file === 'replace.js' ||
+      file === 'package-lock.json'
+    ) {
       continue;
     }
 
@@ -41,8 +46,28 @@ function processFile(filePath) {
   try {
     const ext = path.extname(filePath).toLowerCase();
     // Only process text files
-    const validExts = ['.js', '.jsx', '.ts', '.tsx', '.json', '.md', '.html', '.css', '.yml', '.yaml', '.sh', '.py', '.mjs', '.cjs'];
-    if (ext && !validExts.includes(ext) && !filePath.includes('Dockerfile') && !filePath.includes('.env')) {
+    const validExts = [
+      '.js',
+      '.jsx',
+      '.ts',
+      '.tsx',
+      '.json',
+      '.md',
+      '.html',
+      '.css',
+      '.yml',
+      '.yaml',
+      '.sh',
+      '.py',
+      '.mjs',
+      '.cjs',
+    ];
+    if (
+      ext &&
+      !validExts.includes(ext) &&
+      !filePath.includes('Dockerfile') &&
+      !filePath.includes('.env')
+    ) {
       return;
     }
 

@@ -25,7 +25,7 @@ const tscCmd = path.resolve(
   ROOT,
   'node_modules',
   '.bin',
-  process.platform === 'win32' ? 'tsc.cmd' : 'tsc'
+  process.platform === 'win32' ? 'tsc.cmd' : 'tsc',
 );
 execSync(tscCmd, { cwd: SHARED_ROOT, stdio: 'inherit', timeout: 120_000 });
 
