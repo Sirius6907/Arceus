@@ -381,29 +381,31 @@ const doInitLbug = async (dbPath: string, options?: LbugDatabaseOptions) => {
   db = opened.db;
   conn = opened.conn;
 
-  for (const schemaQuery of SCHEMA_QUERIES) {
-    try {
-      await queryAndDrain(conn, schemaQuery);
-    } catch (err) {
-      const msg = err instanceof Error ? err.message : String(err);
-      // Suppression list:
-      //   - "already exists": expected idempotent re-create on existing DBs
-      //   - "could not set lock on file": LadybugDB v0.16.1 emits this on
-      //     Windows when CREATE NODE TABLE runs against a path that was
-      //     just opened (the WAL handle from a fresh Database briefly
-      //     contests the table's first-write lock). The table is created
-      //     anyway and any genuine cross-process lock contention surfaces
-      //     on the next operation via withLbugDb's retry. Logging it here
-      //     would just be noise in CI.
-      if (!msg.includes('already exists') && !isDbBusyError(err)) {
-        logger.warn(`⚠️ Schema creation warning: ${msg.slice(0, 120)}`);
+  if (!options?.readOnly) {
+    for (const schemaQuery of SCHEMA_QUERIES) {
+      try {
+        await queryAndDrain(conn, schemaQuery);
+      } catch (err) {
+        const msg = err instanceof Error ? err.message : String(err);
+        // Suppression list:
+        //   - "already exists": expected idempotent re-create on existing DBs
+        //   - "could not set lock on file": LadybugDB v0.16.1 emits this on
+        //     Windows when CREATE NODE TABLE runs against a path that was
+        //     just opened (the WAL handle from a fresh Database briefly
+        //     contests the table's first-write lock). The table is created
+        //     anyway and any genuine cross-process lock contention surfaces
+        //     on the next operation via withLbugDb's retry. Logging it here
+        //     would just be noise in CI.
+        if (!msg.includes('already exists') && !isDbBusyError(err) && !isReadOnlyDbError(err)) {
+          logger.warn(`⚠️ Schema creation warning: ${msg.slice(0, 120)}`);
+        }
       }
     }
   }
 
   // FTS powers baseline search, so initialize it with the core DB. VECTOR is
   // only required for semantic embeddings and is probed lazily there.
-  await loadFTSExtension();
+  await loadFTSExtension(undefined, options?.readOnly ? { policy: 'load-only' } : {});
 
   currentDbPath = dbPath;
   return { db, conn };
