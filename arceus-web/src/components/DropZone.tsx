@@ -62,16 +62,16 @@ function Crossfade({ activeKey, children }: { activeKey: string; children: React
 function SuccessCard() {
   return (
     <div
-      className="relative overflow-hidden rounded-3xl border border-emerald-500/20 bg-surface p-7"
+      className="relative overflow-hidden rounded-3xl border border-emerald-500/25 bg-surface/50 p-7 shadow-glass backdrop-blur"
       role="status"
       aria-live="polite"
     >
       {/* Success glow */}
-      <div className="pointer-events-none absolute -top-20 left-1/2 h-64 w-64 -translate-x-1/2 rounded-full bg-emerald-500/8 blur-3xl" />
+      <div className="pointer-events-none absolute -top-20 left-1/2 h-64 w-64 -translate-x-1/2 rounded-full bg-emerald-500/12 blur-3xl" />
 
       <div className="relative">
         {/* Animated check icon */}
-        <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-2xl border border-emerald-500/30 bg-gradient-to-br from-emerald-500/20 to-emerald-600/10 shadow-[0_0_30px_rgba(16,185,129,0.15)]">
+        <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-2xl border border-emerald-500/30 bg-gradient-to-br from-emerald-500/20 to-emerald-600/10 shadow-[0_0_30px_rgba(16,185,129,0.2)]">
           <Check className="h-8 w-8 text-emerald-400" />
         </div>
 
@@ -102,12 +102,12 @@ function SuccessCard() {
 function LoadingCard({ message }: { message: string }) {
   return (
     <div
-      className="relative overflow-hidden rounded-3xl border border-accent/20 bg-surface p-7"
+      className="relative overflow-hidden rounded-3xl border border-accent/25 bg-surface/50 p-7 shadow-glass backdrop-blur"
       role="status"
       aria-live="polite"
     >
       {/* Loading glow */}
-      <div className="pointer-events-none absolute -top-20 left-1/2 h-64 w-64 -translate-x-1/2 rounded-full bg-accent/8 blur-3xl" />
+      <div className="pointer-events-none absolute -top-20 left-1/2 h-64 w-64 -translate-x-1/2 rounded-full bg-accent/12 blur-3xl" />
 
       <div className="relative">
         {/* Spinner */}
@@ -284,8 +284,8 @@ export const DropZone = ({ onServerConnect }: DropZoneProps) => {
     <div className="flex min-h-screen items-center justify-center bg-void p-8">
       {/* Background gradient effects */}
       <div className="pointer-events-none fixed inset-0">
-        <div className="absolute top-1/4 left-1/4 h-96 w-96 rounded-full bg-accent/10 blur-3xl" />
-        <div className="absolute right-1/4 bottom-1/4 h-96 w-96 rounded-full bg-node-interface/10 blur-3xl" />
+        <div className="absolute top-1/4 left-1/4 h-[450px] w-[450px] rounded-full bg-accent/15 blur-[120px]" />
+        <div className="absolute right-1/4 bottom-1/4 h-[450px] w-[450px] rounded-full bg-node-folder/15 blur-[120px]" />
       </div>
 
       <div className="relative w-full max-w-lg">

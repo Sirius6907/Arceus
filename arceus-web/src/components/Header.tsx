@@ -27,15 +27,15 @@ import { RepoAnalyzer } from './RepoAnalyzer';
 
 // Color mapping for node types in search results
 const NODE_TYPE_COLORS: Record<string, string> = {
-  Folder: '#6366f1',
-  File: '#3b82f6',
+  Folder: '#8b5cf6',
+  File: '#60a5fa',
   Function: '#10b981',
-  Class: '#f59e0b',
-  Method: '#14b8a6',
-  Interface: '#ec4899',
+  Class: '#f43f5e',
+  Method: '#2dd4bf',
+  Interface: '#fb7185',
   Variable: '#64748b',
   Import: '#475569',
-  Type: '#a78bfa',
+  Type: '#a855f7',
 };
 
 interface HeaderProps {

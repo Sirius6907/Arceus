@@ -5,33 +5,33 @@
 ═══════════════════════════════════════════════════════════════ */
 @theme {
   /* Backgrounds */
-  --color-void: #06060a;
-  --color-deep: #0a0a10;
-  --color-surface: #101018;
-  --color-elevated: #16161f;
-  --color-hover: #1c1c28;
+  --color-void: #04040a;
+  --color-deep: #090714;
+  --color-surface: #110d24;
+  --color-elevated: #171230;
+  --color-hover: #201942;
 
   /* Borders */
-  --color-border-subtle: #1e1e2a;
-  --color-border-default: #2a2a3a;
+  --color-border-subtle: #21184a;
+  --color-border-default: #322470;
 
   /* Text */
-  --color-text-primary: #e4e4ed;
-  --color-text-secondary: #8888a0;
-  --color-text-muted: #5a5a70;
+  --color-text-primary: #f3e8ff;
+  --color-text-secondary: #b3a8e0;
+  --color-text-muted: #786c9f;
 
   /* Accent */
-  --color-accent: #f59e0b;
-  --color-accent-dim: #b45309;
+  --color-accent: #a855f7;
+  --color-accent-dim: #7e22ce;
 
   /* Node colors */
-  --color-node-file: #3b82f6;
-  --color-node-folder: #6366f1;
-  --color-node-class: #f59e0b;
+  --color-node-file: #60a5fa;
+  --color-node-folder: #8b5cf6;
+  --color-node-class: #f43f5e;
   --color-node-function: #10b981;
-  --color-node-interface: #ec4899;
-  --color-node-import: #6b7280;
-  --color-node-method: #14b8a6;
+  --color-node-interface: #fb7185;
+  --color-node-import: #64748b;
+  --color-node-method: #2dd4bf;
 
   /* Fonts */
   --font-sans: 'Outfit', system-ui, sans-serif;
@@ -45,21 +45,22 @@
   --animate-fade-in: fade-in 0.3s ease-out;
 
   /* Box shadows */
-  --shadow-glow: 0 0 20px rgba(245, 158, 11, 0.4);
-  --shadow-glow-soft: 0 0 40px rgba(245, 158, 11, 0.15);
+  --shadow-glass: inset 0 1px 1px 0 rgba(255, 255, 255, 0.05), 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+  --shadow-glow: 0 0 25px rgba(168, 85, 247, 0.35);
+  --shadow-glow-soft: 0 0 50px rgba(168, 85, 247, 0.12);
 }
 
 /* Keyframes */
 @keyframes breathe {
   0%,
   100% {
-    border-color: #2a2a3a;
-    box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.3);
+    border-color: #322470;
+    box-shadow: 0 0 0 0 rgba(168, 85, 247, 0.3);
   }
 
   50% {
-    border-color: #f59e0b;
-    box-shadow: 0 0 40px 10px rgba(245, 158, 11, 0.3);
+    border-color: #a855f7;
+    box-shadow: 0 0 40px 10px rgba(168, 85, 247, 0.3);
   }
 }
 
@@ -67,12 +68,12 @@
   0%,
   100% {
     transform: scale(1);
-    box-shadow: 0 0 40px rgba(245, 158, 11, 0.4);
+    box-shadow: 0 0 40px rgba(168, 85, 247, 0.4);
   }
 
   50% {
     transform: scale(1.1);
-    box-shadow: 0 0 80px rgba(245, 158, 11, 0.6);
+    box-shadow: 0 0 80px rgba(168, 85, 247, 0.6);
   }
 }
 

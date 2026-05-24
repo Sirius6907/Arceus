@@ -105,13 +105,34 @@ Then re-run `npx arc analyze` (and `--embeddings` if you need vectors).
 
 ## Local bridge for the web UI
 
+### Standard HTTP (Local Default)
 ```bash
 cd arc
 npx arc serve
-# default http://127.0.0.1:4747 — see serve --help for port/host
+# default http://localhost:4747 — see serve --help for port/host
 ```
-
 Use when the browser UI should talk to **local** indexed repos instead of WASM-only mode.
+
+### Secure HTTPS (Local SSL)
+To connect a secure production frontend (like Vercel) to your local backend without triggering **Mixed Content** browser blocks:
+```bash
+npx arc serve --ssl-key localhost-key.pem --ssl-cert localhost-cert.pem
+# Runs securely on https://localhost:4747
+```
+Or set environment variables `SSL_KEY_PATH` and `SSL_CERT_PATH`.
+
+### Secure Tunnels (Ngrok / Cloudflare)
+Alternatively, you can expose your local server securely to the web. Arceus whitelists standard secure tunnels (`*.ngrok-free.app`, `*.ngrok.io`, `*.trycloudflare.com`, `*.localtunnel.me`) by default.
+
+Start the standard server:
+```bash
+npx arc serve
+```
+Then start your tunnel:
+```bash
+ngrok http 4747
+```
+Paste the resulting `https://...ngrok-free.app` URL into the web UI onboarding input, and the connection will pass CORS and Mixed Content checks automatically.
 
 ---
 

@@ -24,7 +24,12 @@ process.on('unhandledRejection', (reason) => {
   process.exit(1);
 });
 
-export const serveCommand = async (options?: { port?: string; host?: string }) => {
+export const serveCommand = async (options?: {
+  port?: string;
+  host?: string;
+  sslKey?: string;
+  sslCert?: string;
+}) => {
   const port = Number(options?.port ?? 4747);
   // Default to 'localhost' so the OS decides whether to bind to 127.0.0.1 or
   // ::1 based on system configuration, avoiding spurious CORS errors when the
@@ -32,7 +37,10 @@ export const serveCommand = async (options?: { port?: string; host?: string }) =
   const host = options?.host ?? 'localhost';
 
   try {
-    await createServer(port, host);
+    await createServer(port, host, {
+      sslKey: options?.sslKey,
+      sslCert: options?.sslCert,
+    });
   } catch (err: any) {
     if (err.code === 'EADDRINUSE') {
       cliError(

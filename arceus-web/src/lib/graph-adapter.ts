@@ -289,12 +289,12 @@ export const knowledgeGraphToGraphology = (
     // DEPENDENCIES - Blue (imports between files)
     IMPORTS: { color: '#1d4ed8', sizeMultiplier: 0.6 }, // Blue - file imports file
 
-    // FUNCTION FLOW - Purple (call graph)
-    CALLS: { color: '#f59e0b', sizeMultiplier: 0.8 }, // Violet - function calls
+    // FUNCTION FLOW - Electric Purple (call graph)
+    CALLS: { color: '#a855f7', sizeMultiplier: 0.8 }, // Electric purple - function calls
 
-    // TYPE RELATIONSHIPS - Warm colors (OOP)
-    EXTENDS: { color: '#c2410c', sizeMultiplier: 1.0 }, // Orange - extension
-    IMPLEMENTS: { color: '#be185d', sizeMultiplier: 0.9 }, // Pink - interface implementation
+    // TYPE RELATIONSHIPS - Neon Rose / Teal (OOP)
+    EXTENDS: { color: '#fb7185', sizeMultiplier: 1.0 }, // Neon Rose - extension
+    IMPLEMENTS: { color: '#2dd4bf', sizeMultiplier: 0.9 }, // Neon Teal - interface implementation
   };
 
   knowledgeGraph.relationships.forEach((rel) => {

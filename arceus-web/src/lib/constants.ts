@@ -1,43 +1,43 @@
 import type { NodeLabel } from 'arceus-shared';
 
-// Node colors by type - slightly muted for less visual noise
+// Node colors by type - Celestial Aurora premium aesthetic
 export const NODE_COLORS: Record<NodeLabel, string> = {
-  Project: '#fbbf24', // Purple - prominent
-  Package: '#f59e0b', // Violet
-  Module: '#f59e0b', // Violet darker
-  Folder: '#6366f1', // Indigo
-  File: '#3b82f6', // Blue
-  Class: '#f59e0b', // Amber - stands out
-  Function: '#10b981', // Emerald
-  Method: '#14b8a6', // Teal
+  Project: '#a855f7', // Electric Purple - prominent
+  Package: '#7e22ce', // Violet
+  Module: '#6b21a8', // Dark Violet
+  Folder: '#8b5cf6', // Neon Violet
+  File: '#60a5fa', // Neon Sky Blue
+  Class: '#f43f5e', // Neon Rose
+  Function: '#10b981', // Electric Emerald
+  Method: '#2dd4bf', // Neon Teal
   Variable: '#64748b', // Slate - muted (less important)
-  Interface: '#ec4899', // Pink
-  Enum: '#f97316', // Orange
-  Decorator: '#eab308', // Yellow
+  Interface: '#fb7185', // Soft Neon Pink
+  Enum: '#f97316', // Neon Orange
+  Decorator: '#eab308', // Neon Yellow
   Import: '#475569', // Slate darker - very muted
-  Type: '#a78bfa', // Violet light
+  Type: '#a855f7', // Electric Purple
   CodeElement: '#64748b', // Slate - muted
-  Community: '#818cf8', // Indigo light - cluster indicator
-  Process: '#f43f5e', // Rose - execution flow indicator
-  Section: '#60a5fa', // Blue light - structural section
-  Struct: '#f59e0b', // Amber - like Class
-  Trait: '#ec4899', // Pink - like Interface
-  Impl: '#14b8a6', // Teal - like Method
-  TypeAlias: '#a78bfa', // Violet light - like Type
+  Community: '#8b5cf6', // Neon Violet - cluster indicator
+  Process: '#f43f5e', // Neon Rose - execution flow indicator
+  Section: '#60a5fa', // Neon Sky Blue - structural section
+  Struct: '#f43f5e', // Neon Rose - like Class
+  Trait: '#fb7185', // Soft Neon Pink - like Interface
+  Impl: '#2dd4bf', // Neon Teal - like Method
+  TypeAlias: '#a855f7', // Electric Purple - like Type
   Const: '#64748b', // Slate - like Variable
   Static: '#64748b', // Slate - like Variable
-  Namespace: '#f59e0b', // Violet - like Module
-  Union: '#f97316', // Orange - like Enum
-  Typedef: '#a78bfa', // Violet light - like Type
-  Macro: '#eab308', // Yellow - like Decorator
+  Namespace: '#7e22ce', // Violet - like Module
+  Union: '#f97316', // Neon Orange - like Enum
+  Typedef: '#a855f7', // Electric Purple - like Type
+  Macro: '#eab308', // Neon Yellow - like Decorator
   Property: '#64748b', // Slate - like Variable
-  Record: '#f59e0b', // Amber - like Class
-  Delegate: '#14b8a6', // Teal - like Method
-  Annotation: '#eab308', // Yellow - like Decorator
-  Constructor: '#10b981', // Emerald - like Function
-  Template: '#a78bfa', // Violet light - like Type
-  Route: '#f43f5e', // Rose - like Process
-  Tool: '#fbbf24', // Purple - like Project
+  Record: '#f43f5e', // Neon Rose - like Class
+  Delegate: '#2dd4bf', // Neon Teal - like Method
+  Annotation: '#eab308', // Neon Yellow - like Decorator
+  Constructor: '#10b981', // Electric Emerald - like Function
+  Template: '#a855f7', // Electric Purple - like Type
+  Route: '#f43f5e', // Neon Rose - like Process
+  Tool: '#a855f7', // Electric Purple - like Project
 };
 
 // Node sizes by type - clear visual hierarchy with dramatic size differences
@@ -158,7 +158,7 @@ export const EDGE_INFO: Record<EdgeType, { color: string; label: string }> = {
   CONTAINS: { color: '#2d5a3d', label: 'Contains' },
   DEFINES: { color: '#0e7490', label: 'Defines' },
   IMPORTS: { color: '#1d4ed8', label: 'Imports' },
-  CALLS: { color: '#f59e0b', label: 'Calls' },
-  EXTENDS: { color: '#c2410c', label: 'Extends' },
-  IMPLEMENTS: { color: '#be185d', label: 'Implements' },
+  CALLS: { color: '#a855f7', label: 'Calls' },
+  EXTENDS: { color: '#fb7185', label: 'Extends' },
+  IMPLEMENTS: { color: '#2dd4bf', label: 'Implements' },
 };

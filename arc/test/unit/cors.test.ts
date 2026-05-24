@@ -182,3 +182,36 @@ describe('isAllowedOrigin: rejected origins', () => {
     expect(isAllowedOrigin('http://172.16.5.1:3000')).toBe(true);
   });
 });
+
+describe('isAllowedOrigin: custom environment variable ALLOWED_ORIGINS', () => {
+  const originalAllowed = process.env.ALLOWED_ORIGINS;
+
+  it('allows exact custom origins when configured', () => {
+    process.env.ALLOWED_ORIGINS =
+      'https://custom-deploy.vercel.app,https://my-tunnel.ngrok-free.app';
+    try {
+      expect(isAllowedOrigin('https://custom-deploy.vercel.app')).toBe(true);
+      expect(isAllowedOrigin('https://my-tunnel.ngrok-free.app')).toBe(true);
+      expect(isAllowedOrigin('https://evil-unconfigured.vercel.app')).toBe(false);
+    } finally {
+      process.env.ALLOWED_ORIGINS = originalAllowed;
+    }
+  });
+});
+
+describe('isAllowedOrigin: standard secure tunnels', () => {
+  it('allows standard ngrok secure tunnels', () => {
+    expect(isAllowedOrigin('https://my-subdomain.ngrok-free.app')).toBe(true);
+    expect(isAllowedOrigin('http://another-one.ngrok.io')).toBe(true);
+  });
+
+  it('allows Cloudflare and Localtunnel secure tunnels', () => {
+    expect(isAllowedOrigin('https://hello.trycloudflare.com')).toBe(true);
+    expect(isAllowedOrigin('https://world.localtunnel.me')).toBe(true);
+  });
+
+  it('rejects other unapproved domains sharing suffix parts', () => {
+    expect(isAllowedOrigin('https://ngrok-free.app.evil.com')).toBe(false);
+    expect(isAllowedOrigin('https://evil-trycloudflare.com.org')).toBe(false);
+  });
+});

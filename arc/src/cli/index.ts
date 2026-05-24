@@ -170,11 +170,13 @@ Options:
     case 'serve':
       console.log(`Usage: ${binName} serve [options]
 
-Start local HTTP server for web UI connection
+Start local HTTP/HTTPS server for web UI connection
 
 Options:
   -p, --port <port>     Port number (default: 4747)
-  --host <host>         Bind address (default: 127.0.0.1)`);
+  --host <host>         Bind address (default: 127.0.0.1)
+  --ssl-key <path>      Path to SSL/TLS private key file (enables HTTPS)
+  --ssl-cert <path>     Path to SSL/TLS certificate file (enables HTTPS)`);
       break;
     case 'stop':
       console.log(`Usage: ${binName} stop [options]

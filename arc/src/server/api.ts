@@ -74,6 +74,14 @@ export const isAllowedOrigin = (origin: string | undefined): boolean => {
     return true;
   }
 
+  // Support custom environment variable for additional allowed origins
+  if (process.env.ALLOWED_ORIGINS) {
+    const customOrigins = process.env.ALLOWED_ORIGINS.split(',').map((o) => o.trim());
+    if (customOrigins.includes(origin)) {
+      return true;
+    }
+  }
+
   // RFC 1918 private network ranges — allow any port on these hosts.
   // We parse the hostname out of the origin URL and check against each range.
   let hostname: string;
@@ -89,6 +97,16 @@ export const isAllowedOrigin = (origin: string | undefined): boolean => {
 
   // Only allow HTTP(S) origins — reject ftp://, file://, etc.
   if (protocol !== 'http:' && protocol !== 'https:') return false;
+
+  // Allow standard secure tunnels (ngrok, cloudflare tunnel, localtunnel)
+  if (
+    hostname.endsWith('.ngrok-free.app') ||
+    hostname.endsWith('.ngrok.io') ||
+    hostname.endsWith('.trycloudflare.com') ||
+    hostname.endsWith('.localtunnel.me')
+  ) {
+    return true;
+  }
 
   const octets = hostname.split('.').map(Number);
   if (octets.length !== 4 || octets.some((o) => !Number.isInteger(o) || o < 0 || o > 255)) {
@@ -619,7 +637,11 @@ export const handleFileRequest = async (
   }
 };
 
-export const createServer = async (port: number, host: string = '127.0.0.1') => {
+export const createServer = async (
+  port: number,
+  host: string = '127.0.0.1',
+  options?: { sslKey?: string; sslCert?: string },
+) => {
   const app = express();
   app.disable('x-powered-by');
 
@@ -1810,13 +1832,39 @@ export const createServer = async (port: number, host: string = '127.0.0.1') => 
 
   // Wrap listen in a promise so errors (EADDRINUSE, EACCES, etc.) propagate
   // to the caller instead of crashing with an unhandled 'error' event.
-  await new Promise<void>((resolve, reject) => {
-    const server = app.listen(port, host, () => {
-      const displayHost = host === '::' || host === '0.0.0.0' ? 'localhost' : host;
-      console.log(`Arceus server running on http://${displayHost}:${port}`);
-      resolve();
-    });
-    server.on('error', (err) => reject(err));
+  // Load SSL/TLS certificates if specified via CLI options or environment variables
+  const sslKeyPath = options?.sslKey || process.env.SSL_KEY_PATH;
+  const sslCertPath = options?.sslCert || process.env.SSL_CERT_PATH;
+  const isHttps = !!(sslKeyPath && sslCertPath);
+
+  // Wrap listen in a promise so errors (EADDRINUSE, EACCES, etc.) propagate
+  // to the caller instead of crashing with an unhandled 'error' event.
+  await new Promise<void>(async (resolve, reject) => {
+    let server: any;
+    try {
+      if (isHttps) {
+        const https = await import('node:https');
+        const fsLib = await import('node:fs/promises');
+        const key = await fsLib.readFile(sslKeyPath!, 'utf-8');
+        const cert = await fsLib.readFile(sslCertPath!, 'utf-8');
+        server = https.createServer({ key, cert }, app);
+        server.listen(port, host, () => {
+          const displayHost = host === '::' || host === '0.0.0.0' ? 'localhost' : host;
+          console.log(`Arceus server running securely on https://${displayHost}:${port}`);
+          resolve();
+        });
+      } else {
+        server = app.listen(port, host, () => {
+          const displayHost = host === '::' || host === '0.0.0.0' ? 'localhost' : host;
+          console.log(`Arceus server running on http://${displayHost}:${port}`);
+          resolve();
+        });
+      }
+    } catch (err) {
+      reject(err);
+      return;
+    }
+    server.on('error', (err: any) => reject(err));
 
     // Graceful shutdown — close Express + LadybugDB cleanly. Pino's default
     // destination is `sync: false` (buffered); `flushLoggerSync()` before

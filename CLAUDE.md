@@ -56,7 +56,7 @@ See the `<!-- arc:start --> … <!-- arc:end -->` block in **[AGENTS.md](AGENTS.
 <!-- arc:start -->
 # Arceus — Code Intelligence
 
-This project is indexed by Arceus as **Arceus-main** (25789 symbols, 39975 relationships, 300 execution flows). Use the Arceus MCP tools to understand code, assess impact, and navigate safely.
+This project is indexed by Arceus as **Arceus** (25828 symbols, 39969 relationships, 300 execution flows). Use the Arceus MCP tools to understand code, assess impact, and navigate safely.
 
 > If any Arceus tool warns the index is stale, run `npx arc analyze` in terminal first.
 
@@ -79,10 +79,10 @@ This project is indexed by Arceus as **Arceus-main** (25789 symbols, 39975 relat
 
 | Resource | Use for |
 |----------|---------|
-| `arc://repo/Arceus-main/context` | Codebase overview, check index freshness |
-| `arc://repo/Arceus-main/clusters` | All functional areas |
-| `arc://repo/Arceus-main/processes` | All execution flows |
-| `arc://repo/Arceus-main/process/{name}` | Step-by-step execution trace |
+| `arc://repo/Arceus/context` | Codebase overview, check index freshness |
+| `arc://repo/Arceus/clusters` | All functional areas |
+| `arc://repo/Arceus/processes` | All execution flows |
+| `arc://repo/Arceus/process/{name}` | Step-by-step execution trace |
 
 ## CLI
 

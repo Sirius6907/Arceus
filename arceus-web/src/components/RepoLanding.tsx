@@ -93,10 +93,10 @@ interface RepoLandingProps {
 
 export const RepoLanding = ({ repos, onSelectRepo, onAnalyzeComplete }: RepoLandingProps) => {
   return (
-    <div className="relative animate-fade-in overflow-hidden rounded-3xl border border-border-default bg-surface p-7">
+    <div className="relative animate-fade-in overflow-hidden rounded-3xl border border-border-subtle/80 bg-surface/50 p-7 shadow-glass backdrop-blur">
       {/* Ambient glows — mirrors OnboardingGuide aesthetic */}
-      <div className="pointer-events-none absolute -top-28 -right-28 h-72 w-72 rounded-full bg-accent/6 blur-3xl" />
-      <div className="pointer-events-none absolute -bottom-24 -left-24 h-56 w-56 rounded-full bg-node-function/6 blur-3xl" />
+      <div className="pointer-events-none absolute -top-28 -right-28 h-72 w-72 rounded-full bg-accent/12 blur-3xl" />
+      <div className="pointer-events-none absolute -bottom-24 -left-24 h-56 w-56 rounded-full bg-node-folder/12 blur-3xl" />
 
       {/* Header */}
       <div className="relative mb-6">
